@@ -1,0 +1,21 @@
+.formContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  width: 350px;
+  margin-top: 5rem;
+
+  & small {
+    // margin-bottom: 1rem;
+    color: red;
+  }
+
+  & input {
+    margin-bottom: 0.5rem;
+  }
+}
