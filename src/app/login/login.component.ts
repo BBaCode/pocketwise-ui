@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { RegisterService } from '../services/register/register.service';
+import { HttpService } from '../services/http/register.service';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +18,7 @@ import { RegisterService } from '../services/register/register.service';
   styleUrl: './login.component.scss',
 })
 export class LoginComponent {
-  constructor(private registerService: RegisterService) {}
+  constructor(private http: HttpService) {}
 
   loginForm = new FormGroup({
     email: new FormControl<string>('', [Validators.required, Validators.email]),
@@ -29,14 +29,13 @@ export class LoginComponent {
   });
 
   onSubmit() {
-    console.log(this.loginForm.value);
     if (
       this.loginForm.value.email !== null &&
       this.loginForm.value.password !== null &&
       this.loginForm.value.email !== undefined &&
       this.loginForm.value.password !== undefined
     ) {
-      this.registerService
+      this.http
         .registerNewUser(
           this.loginForm.value.email,
           this.loginForm.value.password
