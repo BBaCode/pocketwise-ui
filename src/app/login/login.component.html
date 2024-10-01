@@ -8,4 +8,5 @@
         <small *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">Password must be at least 8 characters long</small>
         <p-button (onClick)="onSubmit()" pRipple [disabled]="!loginForm.valid" label="Submit" />
     </form>
+    <p *ngIf="loginMessage">{{loginMessage}}</p>
 </div>

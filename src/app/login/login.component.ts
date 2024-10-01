@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { HttpService } from '../services/http/register.service';
+import { HttpService } from '../services/http/http.service';
 
 @Component({
   selector: 'app-login',
@@ -28,6 +28,8 @@ export class LoginComponent {
     ]),
   });
 
+  loginMessage: string = '';
+
   onSubmit() {
     if (
       this.loginForm.value.email !== null &&
@@ -40,9 +42,16 @@ export class LoginComponent {
           this.loginForm.value.email,
           this.loginForm.value.password
         )
-        .subscribe((data) => {
-          console.log(data);
-        });
+        .subscribe(
+          {
+            next: (data: any) => {
+              this.loginMessage = data.message;
+            },
+          }
+          //   (data) => {
+          //   console.log(data);
+          // }
+        );
     }
   }
 }
