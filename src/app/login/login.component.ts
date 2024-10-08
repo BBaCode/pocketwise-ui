@@ -9,6 +9,7 @@ import {
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { HttpService } from '../services/http/register.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,9 @@ import { HttpService } from '../services/http/register.service';
   styleUrl: './login.component.scss',
 })
 export class LoginComponent {
-  constructor(private http: HttpService) {}
+  constructor(private http: HttpService, private router: Router) {}
+
+  loginMessage: string = "";
 
   loginForm = new FormGroup({
     email: new FormControl<string>('', [Validators.required, Validators.email]),
@@ -40,9 +43,16 @@ export class LoginComponent {
           this.loginForm.value.email,
           this.loginForm.value.password
         )
-        .subscribe((data) => {
-          console.log(data);
-        });
+        .subscribe({
+          next:((data: any) => {
+            this.loginMessage = data.message;
+            this.router.navigate(["/dashboard"])
+          }),
+          error:((error: any) => {
+            console.error(error)
+          }),
+        }
+        );
     }
   }
 }
