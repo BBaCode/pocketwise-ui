@@ -1,1 +1,21 @@
-<div>DB</div>
+<div>
+  <!-- this works but hiding for testing -->
+  <!-- <div>Networth: {{networth}}</div> -->
+  <div *ngIf="accountsLoaded" class="account-list">
+    <div class="account-card" *ngFor="let account of accountList">
+      <p-card>
+        <p class="account-title">{{ account.name }}</p>
+        <div class="account-information">
+          <p [ngClass]="mockBalanceInt > 0 ? 'green' : 'red'">
+            {{ formatDollarValue(mockBalance) }}
+          </p>
+          <p-tag
+            [severity]="decideTagColor(account['available-balance'])"
+            [value]="decideTagValue(account['available-balance'])"
+          />
+        </div>
+      </p-card>
+    </div>
+  </div>
+  <div *ngIf="!accountsLoaded"></div>
+</div>
