@@ -1,0 +1,43 @@
+<!-- <p-table
+  class="p-datatable-sm"
+  [value]="transactions"
+  [tableStyle]="{ 'min-width': '50rem' }"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Payee</th>
+      <th>Amount</th>
+      <th>Date</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-transaction>
+    <tr>
+      <td>{{ transaction.payee }}</td>
+      <td>{{ transaction.amount }}</td>
+      <td>{{ transaction.transacted_at | etDate }}</td>
+    </tr>
+  </ng-template>
+</p-table> -->
+
+<div>
+  <div *ngFor="let transaction of transactions">
+    <div class="transaction-card">
+      <div class="transaction-left">
+        <p-avatar
+          class="transaction-avatar"
+          size="large"
+          icon="pi pi-receipt"
+          shape="circle"
+          [style]="{ 'background-color': '#dee9fc', color: '#1a2551' }"
+        />
+        <div>
+          <strong>{{ transaction.payee }}</strong>
+          <p>{{ transaction.transacted_at | etDate }}</p>
+        </div>
+      </div>
+      <span>{{ transaction.amount | formatDollar }}</span>
+    </div>
+
+    <!-- Add other info as needed -->
+  </div>
+</div>

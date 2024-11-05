@@ -5,11 +5,13 @@ import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
 import { CommonModule } from '@angular/common';
 import { Account } from '../models/account.model';
+import { Router } from '@angular/router';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CardModule, CommonModule, TagModule],
+  imports: [CardModule, CommonModule, TagModule, ProgressSpinnerModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
@@ -23,7 +25,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   mockBalance: string = '100000.00';
   mockBalanceInt: number = parseInt(this.mockBalance);
 
-  constructor(private sf: SimplefinService) {
+  constructor(private sf: SimplefinService, private router: Router) {
     this.accounts$ = sf.simplefinDataStore.subscribe((data) => {
       this.accountList = data.accounts;
       this.generateNetWorth();
@@ -33,6 +35,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.accountsLoaded = false;
     this.sf.getAccounts();
   }
 
@@ -76,14 +79,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  getLast30DaysTimestamp() {
-    // Get the current date and time
-    const now = new Date();
+  // getLast30DaysTimestamp() {
+  //   // Get the current date and time
+  //   const now = new Date();
 
-    // Calculate the date 30 days ago
-    const last30Days = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+  //   // Calculate the date 30 days ago
+  //   const last30Days = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
-    // Convert to Unix timestamp in seconds (since Simplefin might need it in seconds)
-    return Math.floor(last30Days.getTime() / 1000);
+  //   // Convert to Unix timestamp in seconds (since Simplefin might need it in seconds)
+  //   return Math.floor(last30Days.getTime() / 1000);
+  // }
+
+  navigateToAccount(id: string) {
+    this.router.navigate(['/account', id]);
   }
 }
