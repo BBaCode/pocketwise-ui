@@ -31,7 +31,7 @@
           [style]="{ 'background-color': '#dee9fc', color: '#1a2551' }"
         />
         <div>
-          <strong>{{ transaction.payee }}</strong>
+          <strong>{{ transaction.payee }}</strong><span>{{transaction.category}}</span>
           <p>{{ transaction.transacted_at | etDate }}</p>
         </div>
       </div>
