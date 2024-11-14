@@ -31,6 +31,8 @@ export class LoginComponent {
     ]),
   });
 
+  loginMessage: string = '';
+
   onSubmit() {
     if (
       this.loginForm.value.email !== null &&
