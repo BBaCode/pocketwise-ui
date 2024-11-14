@@ -1,0 +1,27 @@
+<div *ngIf="transactionsLoaded">
+  <div *ngFor="let transaction of transactions">
+    <div class="transaction-card">
+      <div class="transaction-left">
+        <p-avatar
+          class="transaction-avatar"
+          size="large"
+          icon="pi pi-receipt"
+          shape="circle"
+          [style]="{ 'background-color': '#dee9fc', color: '#1a2551' }"
+        />
+        <div>
+          <strong>{{ transaction.payee }}</strong><span>{{transaction.category}}</span>
+          <p>{{ transaction.transacted_at | etDate }}</p>
+        </div>
+      </div>
+      <span>{{ transaction.amount | formatDollar }}</span>
+    </div>
+
+    <!-- Add other info as needed -->
+  </div>
+</div>
+
+  <div *ngIf="!transactionsLoaded" class="spinner-container">
+    <p-progressSpinner ariaLabel="loading" />
+  </div>
+

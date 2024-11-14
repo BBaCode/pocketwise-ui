@@ -1,0 +1,27 @@
+.transaction-card {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  align-items: center;
+  font-family: Roboto;
+}
+.transaction-left {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.transaction-avatar {
+  margin-right: 0.5rem;
+}
+
+.p-component {
+  box-shadow: none !important;
+}
+
+.spinner-container {
+  width: 100%;
+  height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
