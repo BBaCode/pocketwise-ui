@@ -1,24 +1,3 @@
-<!-- <p-table
-  class="p-datatable-sm"
-  [value]="transactions"
-  [tableStyle]="{ 'min-width': '50rem' }"
->
-  <ng-template pTemplate="header">
-    <tr>
-      <th>Payee</th>
-      <th>Amount</th>
-      <th>Date</th>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="body" let-transaction>
-    <tr>
-      <td>{{ transaction.payee }}</td>
-      <td>{{ transaction.amount }}</td>
-      <td>{{ transaction.transacted_at | etDate }}</td>
-    </tr>
-  </ng-template>
-</p-table> -->
-
 <div *ngIf="transactionsLoaded">
   <div *ngFor="let transaction of transactions">
     <div class="transaction-card">
