@@ -7,11 +7,18 @@ import { CommonModule } from '@angular/common';
 import { Account } from '../models/account.model';
 import { Router } from '@angular/router';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { PanelModule } from 'primeng/panel';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CardModule, CommonModule, TagModule, ProgressSpinnerModule],
+  imports: [
+    CardModule,
+    CommonModule,
+    TagModule,
+    ProgressSpinnerModule,
+    PanelModule,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
@@ -19,7 +26,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   accounts$: Subscription;
   accountList: Account[] | null = null;
   accountsLoaded: boolean = false;
-  networth: number = 0;
+  netWorth: number = 0;
 
   //mocked for testing to not use my real accounts
   mockBalance: string = '100000.00';
@@ -28,69 +35,64 @@ export class DashboardComponent implements OnInit, OnDestroy {
   constructor(private sf: SimplefinService, private router: Router) {
     this.accounts$ = sf.simplefinDataStore.subscribe((data) => {
       this.accountList = data.accounts;
+      this.sortAccountByType();
       this.generateNetWorth();
       this.accountsLoaded = true;
-      console.log(this.accountList);
+      console.log('db constructed, account list:', this.accountList);
     });
   }
 
   ngOnInit(): void {
     this.accountsLoaded = false;
     this.sf.getAccounts();
+    console.log('db inited');
   }
 
   ngOnDestroy(): void {
     this.accounts$.unsubscribe();
     this.accountsLoaded = false;
+    console.log('db destroyed');
   }
 
-  // private decideTagColor(availableBalance: number | string) {
-  //   if (typeof availableBalance === 'string')
-  //     availableBalance = parseInt(availableBalance);
-  //   if (availableBalance > 0) {
-  //     return { severity: 'primary', value: 'Bank' };
-  //   } else return { severity: 'success', value: 'Credit Card' };
-  // }
-
-  decideTagColor(availableBalance: string | number) {
-    if (availableBalance === '0.00') {
+  decideTagColor(accountType: string | undefined) {
+    if (accountType === 'Credit Card') {
       return 'info';
     } else return 'success';
   }
 
-  decideTagValue(availableBalance: string | number) {
-    if (availableBalance === '0.00') {
-      return 'Credit Card';
-    } else return 'Bank';
-  }
-
-  formatDollarValue(value: string) {
+  formatDollarValue(value: any) {
     const number = parseFloat(value);
     return new Intl.NumberFormat('en-US', {
-      style: 'decimal',
+      currencySign: 'standard',
+      currency: 'USD',
+      currencyDisplay: 'symbol',
+      style: 'currency',
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(number);
   }
 
-  generateNetWorth() {
+  navigateToAccount(id: string) {
+    this.router.navigate(['/account', id]);
+  }
+
+  convertToNumber(s: string) {
+    return parseInt(s);
+  }
+
+  private generateNetWorth() {
     this.accountList?.forEach((account) => {
-      this.networth += parseInt(account['available-balance']);
+      this.netWorth += parseInt(account['available-balance']);
     });
   }
 
-  // getLast30DaysTimestamp() {
-  //   // Get the current date and time
-  //   const now = new Date();
-
-  //   // Calculate the date 30 days ago
-  //   const last30Days = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-
-  //   // Convert to Unix timestamp in seconds (since Simplefin might need it in seconds)
-  //   return Math.floor(last30Days.getTime() / 1000);
-  // }
-
-  navigateToAccount(id: string) {
-    this.router.navigate(['/account', id]);
+  private sortAccountByType() {
+    this.accountList?.forEach((acc) => {
+      if (acc.org.name.includes('Chase')) {
+        acc['type'] = 'Credit Card';
+      } else if (acc.org.name.includes('Bank')) {
+        acc['type'] = 'Bank';
+      }
+    });
   }
 }

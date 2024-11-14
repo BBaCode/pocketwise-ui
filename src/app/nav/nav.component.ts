@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { MenubarModule } from 'primeng/menubar';
 import { MenuItem } from 'primeng/api';
-import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-nav',
   standalone: true,
-  imports: [MenubarModule],
+  imports: [MenubarModule, CommonModule],
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.scss',
 })
 export class NavComponent implements OnInit {
-  constructor(private router: Router) {}
+  constructor() {}
 
   items: MenuItem[] | undefined;
 
@@ -19,21 +19,15 @@ export class NavComponent implements OnInit {
     this.items = [
       {
         label: 'Login',
-        command: () => {
-          this.router.navigate(['/login']);
-        },
+        routerLink: '/login',
       },
       {
         label: 'Signup',
-        command: () => {
-          this.router.navigate(['/signup']);
-        },
+        routerLink: '/signup',
       },
       {
         label: 'Dashboard',
-        command: () => {
-          this.router.navigate(['/dashboard']);
-        },
+        routerLink: '/dashboard',
       },
     ];
   }

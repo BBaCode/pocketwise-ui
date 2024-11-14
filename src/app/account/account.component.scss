@@ -17,3 +17,11 @@
 .p-component {
   box-shadow: none !important;
 }
+
+.spinner-container {
+  width: 100%;
+  height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

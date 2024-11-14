@@ -1,17 +1,21 @@
 <div>
   <!-- this works but hiding for testing -->
-  <!-- <div>Networth: {{networth}}</div> -->
+   <div class="netWorth">  <p-panel class="netWorth" header="Net Worth">
+    <p [ngClass]="netWorth > 0 ? 'green' : 'red'">
+      {{formatDollarValue(netWorth)}}
+    </p>
+  </p-panel></div>
   <div *ngIf="accountsLoaded" class="account-list">
     <div class="account-card" *ngFor="let account of accountList">
       <p-card (click)="navigateToAccount(account.id)">
         <p class="account-title">{{ account.name }}</p>
         <div class="account-information">
-          <p [ngClass]="mockBalanceInt > 0 ? 'green' : 'red'">
-            {{ formatDollarValue(mockBalance) }}
+          <p [ngClass]="convertToNumber(account.balance) > 0 ? 'green' : 'red'">
+            {{ formatDollarValue(account.balance) }}
           </p>
           <p-tag
-            [severity]="decideTagColor(account['available-balance'])"
-            [value]="decideTagValue(account['available-balance'])"
+            [severity]="decideTagColor(account['type'])"
+            [value]="(account['type'])"
           />
         </div>
       </p-card>

@@ -19,7 +19,7 @@
   </ng-template>
 </p-table> -->
 
-<div>
+<div *ngIf="transactionsLoaded">
   <div *ngFor="let transaction of transactions">
     <div class="transaction-card">
       <div class="transaction-left">
@@ -41,3 +41,8 @@
     <!-- Add other info as needed -->
   </div>
 </div>
+
+  <div *ngIf="!transactionsLoaded" class="spinner-container">
+    <p-progressSpinner ariaLabel="loading" />
+  </div>
+
