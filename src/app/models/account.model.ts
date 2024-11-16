@@ -6,7 +6,7 @@ export interface Transaction {
   description: string;
   payee: string;
   memo: string;
-  'transacted-at': number;
+  transacted_at: number;
   category: string;
 }
 

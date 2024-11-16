@@ -8,7 +8,10 @@ export class FormatDollarPipe implements PipeTransform {
   transform(value: string): string {
     const number = parseFloat(value);
     return new Intl.NumberFormat('en-US', {
-      style: 'decimal',
+      currencySign: 'standard',
+      currency: 'USD',
+      currencyDisplay: 'symbol',
+      style: 'currency',
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(number);

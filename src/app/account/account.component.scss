@@ -1,3 +1,37 @@
+.account-container {
+  background-color: var(--highlight-bg);
+  color: var(--highlight-text-color);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 2rem 1rem;
+}
+
+.account-information {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.account-name {
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.account-value {
+  font-size: 1.25rem;
+}
+
+.transactions-header {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
 .transaction-card {
   display: flex;
   justify-content: space-between;

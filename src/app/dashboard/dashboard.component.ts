@@ -36,6 +36,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.accounts$ = sf.simplefinDataStore.subscribe((data) => {
       this.accountList = data.accounts;
       this.sortAccountByType();
+      this.netWorth = 0;
       this.generateNetWorth();
       this.accountsLoaded = true;
       console.log('db constructed, account list:', this.accountList);
