@@ -1,13 +1,40 @@
 <div class="formContainer">
-    <h1>Login</h1>
+  <p-card>
+    <h1>Welcome Back</h1>
     <form class="login-form" [formGroup]="loginForm">
-        <label for="email">Email</label>
-        <input pInputText formControlName="email" type="text" id="email" />
-        <small *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">Email must follow the format of user&#64;example.com </small>
-        <label for="password">Password</label>
-        <input pInputText formControlName="password" type="password" id="password" />
-        <small *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">Password must be at least 8 characters long</small>
-        <p-button (onClick)="onSubmit()" pRipple [disabled]="!loginForm.valid" label="Submit" />
+      <p-iconField class="email-group" iconPosition="left">
+        <p-inputIcon styleClass="pi pi-envelope" />
+        <input
+          pInputText
+          formControlName="email"
+          type="text"
+          id="email"
+          placeholder="Email"
+        />
+      </p-iconField>
+      <br />
+      <p-iconField iconPosition="left">
+        <p-inputIcon styleClass="pi pi-key" />
+        <input
+          pInputText
+          formControlName="password"
+          type="password"
+          id="password"
+          placeholder="Password"
+        />
+      </p-iconField>
+      <p-button
+        (onClick)="onSubmit()"
+        pRipple
+        [disabled]="!loginForm.valid"
+        label="Submit"
+      />
     </form>
-    <p *ngIf="loginMessage">{{loginMessage}}</p>
+    <p *ngIf="loginMessage">{{ loginMessage }}</p>
+    <p-divider></p-divider>
+    <div>
+      Dont have an account? Signup
+      <a class="signup-link" routerLink="/signup">here</a><span>.</span>
+    </div>
+  </p-card>
 </div>

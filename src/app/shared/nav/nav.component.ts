@@ -33,6 +33,13 @@ export class NavComponent implements OnInit {
         label: 'Transactions',
         routerLink: '/transactions',
       },
+      {
+        label: 'Logout',
+        command: () => {
+          localStorage.removeItem('token');
+        },
+        routerLink: '/login',
+      },
     ];
   }
 }

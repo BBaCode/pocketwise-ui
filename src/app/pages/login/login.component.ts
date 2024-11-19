@@ -9,17 +9,31 @@ import {
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { UserService } from '../../core/services/user/user.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { CardModule } from 'primeng/card';
+import { DividerModule } from 'primeng/divider';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, ButtonModule, InputTextModule, NgIf],
+  imports: [
+    ReactiveFormsModule,
+    ButtonModule,
+    InputTextModule,
+    NgIf,
+    CardModule,
+    DividerModule,
+    RouterLink,
+    IconFieldModule,
+    InputIconModule,
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
 export class LoginComponent {
-  constructor(private http: UserService, private router: Router) {}
+  constructor(private user: UserService, private router: Router) {}
 
   loginMessage: string = '';
 
@@ -38,11 +52,13 @@ export class LoginComponent {
       this.loginForm.value.email !== undefined &&
       this.loginForm.value.password !== undefined
     ) {
-      this.http
+      this.user
         .login(this.loginForm.value.email, this.loginForm.value.password)
         .subscribe({
           next: (data: any) => {
             this.loginMessage = data.message;
+            localStorage.setItem('token', data.token);
+            this.user.loadUserAuth(data.token);
             this.router.navigate(['/dashboard']);
           },
           error: (error: any) => {

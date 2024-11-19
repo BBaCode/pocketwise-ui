@@ -5,21 +5,35 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { UserService } from '../../core/services/user/user.service';
 import { NgIf } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { CardModule } from 'primeng/card';
+import { DividerModule } from 'primeng/divider';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [ReactiveFormsModule, ButtonModule, InputTextModule, NgIf],
+  imports: [
+    ReactiveFormsModule,
+    ButtonModule,
+    InputTextModule,
+    NgIf,
+    IconFieldModule,
+    InputIconModule,
+    CardModule,
+    DividerModule,
+    RouterLink,
+  ],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss',
 })
 export class SignupComponent {
-  constructor(private http: UserService, private router: Router) {}
+  constructor(private user: UserService, private router: Router) {}
 
   signUpMessage: string = '';
 
@@ -38,7 +52,7 @@ export class SignupComponent {
       this.signupForm.value.email !== undefined &&
       this.signupForm.value.password !== undefined
     ) {
-      this.http
+      this.user
         .registerNewUser(
           this.signupForm.value.email,
           this.signupForm.value.password
