@@ -2,10 +2,10 @@
   <div class="account-container">
     <p-card>
       <div class="account-information">
-        <div class="account-name">{{account.name}}</div>
-        <div class="account-value">{{account.balance | formatDollar}}</div>
-      </div>    
-  </p-card>
+        <div class="account-name">{{ account.name }}</div>
+        <div class="account-value">{{ account.balance | formatDollar }}</div>
+      </div>
+    </p-card>
   </div>
   <div class="transactions-header">
     <div>Recent Transactions</div>
@@ -32,7 +32,12 @@
   </div>
 </div>
 
-  <div *ngIf="!transactionsLoaded || !account" class="spinner-container">
-    <p-progressSpinner ariaLabel="loading" />
-  </div>
-
+<div *ngIf="!transactionsLoaded || !account" class="spinner-container">
+  <p-progressSpinner ariaLabel="loading" />
+</div>
+<div
+  class="no-transactions"
+  *ngIf="transactionsLoaded && transactions?.length === 0"
+>
+  <p>No transactions available for this account.</p>
+</div>

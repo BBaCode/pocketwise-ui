@@ -34,19 +34,11 @@ import { Categories, ColorCategories } from './constants';
 export class AccountComponent implements OnInit, OnDestroy {
   account: Account | undefined;
   accountId: string | null = null;
-  transactions$: Subscription;
+  transactions$: Subscription = new Subscription();
   transactions: Transaction[] | null = null;
   transactionsLoaded: boolean = false;
 
-  constructor(private route: ActivatedRoute, private sf: SimplefinService) {
-    this.transactions$ = this.sf.simplefinDataStore.subscribe(
-      (data: DataStore) => {
-        this.transactions = data.transactions;
-        this.transactionsLoaded = true;
-        this.account = data.accounts.find((acc) => acc.id === this.accountId);
-      }
-    );
-  }
+  constructor(private route: ActivatedRoute, private sf: SimplefinService) {}
 
   ngOnInit(): void {
     console.log('ngoninit begins', this.transactionsLoaded);
@@ -54,6 +46,13 @@ export class AccountComponent implements OnInit, OnDestroy {
     this.accountId = this.route.snapshot.paramMap.get('id');
     if (this.accountId) {
       this.sf.getTransactionsForAccount(this.accountId);
+      this.transactions$ = this.sf.simplefinDataStore.subscribe(
+        (data: DataStore) => {
+          this.account = data.accounts.find((acc) => acc.id === this.accountId);
+          this.transactions = data.transactions;
+          this.transactionsLoaded = !!this.transactions;
+        }
+      );
     } else {
       console.error('Unable to get transactions for account', this.accountId);
     }

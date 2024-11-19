@@ -17,8 +17,18 @@ export const MOCK_ACCOUNTS: Account[] = [
     balance: '5000.00',
     'balance-date': Date.now(),
     'available-balance': '5000.00',
-    org: { name: 'Global Savings' },
+    org: { name: 'Global Savings Bank' },
     transactions: [], // Can fill in mock transactions
     type: 'Savings',
+  },
+  {
+    id: '3',
+    name: 'Chase Sapphire',
+    balance: '-1022.32',
+    'balance-date': Date.now(),
+    'available-balance': '-1022.32',
+    org: { name: 'JPMorgan Chase' },
+    transactions: [], // Can fill in mock transactions
+    type: 'Credit Card',
   },
 ];

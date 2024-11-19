@@ -30,6 +30,7 @@ export class SimplefinService {
     };
 
     this.simplefinDataStore = new BehaviorSubject<any>(this.initialData);
+    this.getAccounts();
   }
 
   getAccounts(): void {
