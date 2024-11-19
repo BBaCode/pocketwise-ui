@@ -2,11 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Account, Transaction } from '../../models/account.model';
+import { MOCK_TRANSACTIONS } from '../../mock/mock-transactions';
+import { MOCK_ACCOUNTS } from '../../mock/mock-accounts';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SimplefinService {
+  private useMockData = true; // Toggle this to use mock data
   // behavior subject to be subscribed to by everyone
   simplefinDataStore: BehaviorSubject<any>;
   private apiUrl = 'http://localhost:80';
@@ -30,37 +33,51 @@ export class SimplefinService {
   }
 
   getAccounts(): void {
-    console.log('get accounts triggered in simplefin service');
-    this.http.get(`${this.apiUrl}/accounts`).subscribe(
-      (data: any) => {
-        this.store.accounts = data.accounts;
-        this.updateConsumers();
-      },
-      (error) => {
-        console.error('Failed to load accounts', error);
-      }
-    );
-  }
-
-  getTransactionsForAccount(accountId: string): void {
-    console.log('get transactions triggered in simplefin service');
-    this.http
-      .post(
-        `${this.apiUrl}/transactions`,
-        { account: accountId }, // This is the request body
-        {
-          headers: { 'Content-Type': 'application/json' }, // Headers go here
-        }
-      )
-      .subscribe(
+    if (this.useMockData) {
+      console.log('Using mock accounts');
+      this.store.accounts = MOCK_ACCOUNTS;
+      this.updateConsumers();
+    } else {
+      console.log('Fetching accounts from API');
+      this.http.get(`${this.apiUrl}/accounts`).subscribe(
         (data: any) => {
-          this.store.transactions = data;
+          this.store.accounts = data.accounts;
           this.updateConsumers();
         },
         (error) => {
           console.error('Failed to load accounts', error);
         }
       );
+    }
+  }
+
+  getTransactionsForAccount(accountId: string): void {
+    if (this.useMockData) {
+      console.log(`Using mock transactions for account ${accountId}`);
+      this.store.transactions = MOCK_TRANSACTIONS.filter(
+        (transaction: Transaction) => transaction.accountId === accountId
+      );
+      this.updateConsumers();
+    } else {
+      console.log('Fetching transactions from API');
+      this.http
+        .post(
+          `${this.apiUrl}/transactions`,
+          { account: accountId },
+          {
+            headers: { 'Content-Type': 'application/json' },
+          }
+        )
+        .subscribe(
+          (data: any) => {
+            this.store.transactions = data;
+            this.updateConsumers();
+          },
+          (error) => {
+            console.error('Failed to load transactions', error);
+          }
+        );
+    }
   }
 
   loadNewAccounts(): void {
