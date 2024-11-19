@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LoginComponent } from './login.component';
-import { HttpService } from '../services/http/http.service';
+import { HttpService } from '../core/services/http/http.service';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;

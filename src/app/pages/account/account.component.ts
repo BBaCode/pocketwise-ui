@@ -1,13 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { SimplefinService } from '../services/simplefin/simplefin.service';
-import { Account, DataStore, Transaction } from '../models/account.model';
+import { SimplefinService } from '../../core/services/simplefin/simplefin.service';
+import {
+  Account,
+  DataStore,
+  Transaction,
+} from '../../core/models/account.model';
 import { TableModule } from 'primeng/table';
-import { EtDatePipe } from '../pipes/et-date.pipe';
+import { EtDatePipe } from '../../core/pipes/et-date.pipe';
 import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
 import { AvatarModule } from 'primeng/avatar';
-import { FormatDollarPipe } from '../pipes/format-dollar.pipe';
+import { FormatDollarPipe } from '../../core/pipes/format-dollar.pipe';
 import { Subscription } from 'rxjs';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { Categories, ColorCategories } from './constants';

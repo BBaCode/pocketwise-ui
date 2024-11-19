@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { SimplefinService } from '../services/simplefin/simplefin.service';
+import { SimplefinService } from '../../core/services/simplefin/simplefin.service';
 import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
 import { CommonModule } from '@angular/common';
-import { Account } from '../models/account.model';
+import { Account } from '../../core/models/account.model';
 import { Router } from '@angular/router';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { PanelModule } from 'primeng/panel';

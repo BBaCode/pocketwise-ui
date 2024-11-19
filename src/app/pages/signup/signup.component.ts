@@ -1,29 +1,29 @@
-import { NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import {
   ReactiveFormsModule,
-  FormControl,
   FormGroup,
+  FormControl,
   Validators,
 } from '@angular/forms';
+import { Router } from '@angular/router';
+import { UserService } from '../../core/services/user/user.service';
+import { NgIf } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { UserService } from '../services/user/user.service';
-import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-signup',
   standalone: true,
   imports: [ReactiveFormsModule, ButtonModule, InputTextModule, NgIf],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.scss',
+  templateUrl: './signup.component.html',
+  styleUrl: './signup.component.scss',
 })
-export class LoginComponent {
+export class SignupComponent {
   constructor(private http: UserService, private router: Router) {}
 
-  loginMessage: string = '';
+  signUpMessage: string = '';
 
-  loginForm = new FormGroup({
+  signupForm = new FormGroup({
     email: new FormControl<string>('', [Validators.required, Validators.email]),
     password: new FormControl<string>('', [
       Validators.required,
@@ -33,17 +33,21 @@ export class LoginComponent {
 
   onSubmit() {
     if (
-      this.loginForm.value.email !== null &&
-      this.loginForm.value.password !== null &&
-      this.loginForm.value.email !== undefined &&
-      this.loginForm.value.password !== undefined
+      this.signupForm.value.email !== null &&
+      this.signupForm.value.password !== null &&
+      this.signupForm.value.email !== undefined &&
+      this.signupForm.value.password !== undefined
     ) {
       this.http
-        .login(this.loginForm.value.email, this.loginForm.value.password)
+        .registerNewUser(
+          this.signupForm.value.email,
+          this.signupForm.value.password
+        )
         .subscribe({
           next: (data: any) => {
-            this.loginMessage = data.message;
-            this.router.navigate(['/dashboard']);
+            this.signUpMessage = data.message;
+            console.log(data.message);
+            this.router.navigate(['/login']);
           },
           error: (error: any) => {
             console.error(error);
