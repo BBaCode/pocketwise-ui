@@ -18,20 +18,30 @@ export class NavComponent implements OnInit {
   ngOnInit(): void {
     this.items = [
       {
-        label: 'Login',
-        routerLink: '/login',
-      },
-      {
-        label: 'Signup',
-        routerLink: '/signup',
+        label: 'Account',
+        items: [
+          {
+            label: 'Login',
+            routerLink: '/login',
+            icon: 'pi pi-sign-in',
+          },
+          {
+            label: 'Signup',
+            routerLink: '/signup',
+            icon: 'pi pi-user-plus',
+          },
+        ],
+        icon: 'pi pi-user',
       },
       {
         label: 'Dashboard',
         routerLink: '/dashboard',
+        icon: 'pi pi-home',
       },
       {
         label: 'Transactions',
         routerLink: '/transactions',
+        icon: 'pi pi-credit-card',
       },
       {
         label: 'Logout',
@@ -39,6 +49,7 @@ export class NavComponent implements OnInit {
           localStorage.removeItem('token');
         },
         routerLink: '/login',
+        icon: 'pi pi-sign-out',
       },
     ];
   }
