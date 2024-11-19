@@ -35,7 +35,7 @@ import { InputIconModule } from 'primeng/inputicon';
 export class LoginComponent {
   constructor(private user: UserService, private router: Router) {}
 
-  loginMessage: string = '';
+  errorMessage: string = '';
 
   loginForm = new FormGroup({
     email: new FormControl<string>('', [Validators.required, Validators.email]),
@@ -52,16 +52,27 @@ export class LoginComponent {
       this.loginForm.value.email !== undefined &&
       this.loginForm.value.password !== undefined
     ) {
+      this.errorMessage = '';
       this.user
-        .login(this.loginForm.value.email, this.loginForm.value.password)
+        .login(
+          this.loginForm.value.email.toLowerCase(),
+          this.loginForm.value.password
+        )
         .subscribe({
           next: (data: any) => {
-            this.loginMessage = data.message;
+            this.errorMessage = data.message;
             localStorage.setItem('token', data.token);
             this.user.loadUserAuth(data.token);
             this.router.navigate(['/dashboard']);
           },
           error: (error: any) => {
+            if (error.status === 401) {
+              this.errorMessage =
+                'Invalid email or password. Please try again.';
+            } else {
+              this.errorMessage =
+                'An unexpected error occurred. Please try again later.';
+            }
             console.error(error);
           },
         });

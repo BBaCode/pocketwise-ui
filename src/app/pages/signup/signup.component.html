@@ -30,7 +30,9 @@
         label="Register"
       />
     </form>
-    <p>{{ signUpMessage }}</p>
+    <p class="errorMessage" style="color: red" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </p>
     <p-divider></p-divider>
     <div>
       Already have an account? Login

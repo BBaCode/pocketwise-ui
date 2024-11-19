@@ -35,7 +35,7 @@ import { DividerModule } from 'primeng/divider';
 export class SignupComponent {
   constructor(private user: UserService, private router: Router) {}
 
-  signUpMessage: string = '';
+  errorMessage: string = '';
 
   signupForm = new FormGroup({
     email: new FormControl<string>('', [Validators.required, Validators.email]),
@@ -59,11 +59,17 @@ export class SignupComponent {
         )
         .subscribe({
           next: (data: any) => {
-            this.signUpMessage = data.message;
             console.log(data.message);
             this.router.navigate(['/login']);
           },
           error: (error: any) => {
+            if (error.status === 401) {
+              this.errorMessage =
+                'Invalid email or password. Please try again.';
+            } else {
+              this.errorMessage =
+                'An unexpected error occurred. Please try again later.';
+            }
             console.error(error);
           },
         });

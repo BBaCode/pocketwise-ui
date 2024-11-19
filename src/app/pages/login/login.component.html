@@ -30,7 +30,9 @@
         label="Submit"
       />
     </form>
-    <p *ngIf="loginMessage">{{ loginMessage }}</p>
+    <p class="errorMessage" style="color: red" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </p>
     <p-divider></p-divider>
     <div>
       Dont have an account? Signup
