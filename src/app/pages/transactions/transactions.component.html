@@ -1,0 +1,30 @@
+<div *ngIf="dataLoaded">
+  <div class="pie-container">
+    <p-card
+      ><p-chart type="pie" [data]="chartData" [options]="options"
+    /></p-card>
+  </div>
+  <div class="transactions-categories">
+    <p-card>
+      <div *ngFor="let category of categoryArray">
+        <div class="category-information">
+          <div class="category-label">
+            <div
+              [style.backgroundColor]="setCategoryColor(category)"
+              class="key-color"
+            ></div>
+            <div>
+              {{ category.name }}
+            </div>
+          </div>
+          <div>{{ category.value }}</div>
+        </div>
+        <p-divider></p-divider>
+      </div>
+    </p-card>
+  </div>
+</div>
+
+<div *ngIf="!dataLoaded" class="spinner-container">
+  <p-progressSpinner ariaLabel="loading" />
+</div>

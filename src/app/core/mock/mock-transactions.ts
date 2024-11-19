@@ -10,7 +10,7 @@ export const MOCK_TRANSACTIONS: Transaction[] = [
     payee: 'Local Grocery',
     memo: 'Weekly groceries',
     transacted_at: Date.now() - 86400000,
-    category: 'Food & Dining',
+    category: 'Groceries',
   },
   {
     id: 't2',
@@ -44,5 +44,16 @@ export const MOCK_TRANSACTIONS: Transaction[] = [
     memo: 'Morning coffee',
     transacted_at: Date.now() - 172800000,
     category: 'Transportation',
+  },
+  {
+    id: 't4',
+    accountId: '3',
+    posted: Date.now() - 172800000, // 2 days ago
+    amount: '-225.00',
+    description: 'LifeTime Fitness',
+    payee: 'LifeTime Fitness',
+    memo: 'Gym Membership',
+    transacted_at: Date.now() - 172800000,
+    category: 'Health & Wellness',
   },
 ];

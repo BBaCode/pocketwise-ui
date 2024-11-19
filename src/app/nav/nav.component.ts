@@ -29,6 +29,10 @@ export class NavComponent implements OnInit {
         label: 'Dashboard',
         routerLink: '/dashboard',
       },
+      {
+        label: 'Transactions',
+        routerLink: '/transactions',
+      },
     ];
   }
 }

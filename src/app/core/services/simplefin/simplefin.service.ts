@@ -52,6 +52,14 @@ export class SimplefinService {
     }
   }
 
+  // only mocked at this point, need to add to backend
+  getAllTransactions(): void {
+    if (this.useMockData) {
+      this.store.transactions = MOCK_TRANSACTIONS;
+      this.updateConsumers();
+    }
+  }
+
   getTransactionsForAccount(accountId: string): void {
     if (this.useMockData) {
       console.log(`Using mock transactions for account ${accountId}`);
