@@ -68,16 +68,4 @@ export class AccountComponent implements OnInit, OnDestroy {
   assignIconColor(category: string) {
     return { 'background-color': ColorCategories[category], color: '#1a2551' };
   }
-
-  formatDollarValue(value: any) {
-    const number = parseFloat(value);
-    return new Intl.NumberFormat('en-US', {
-      currencySign: 'standard',
-      currency: 'USD',
-      currencyDisplay: 'symbol',
-      style: 'currency',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(number);
-  }
 }
