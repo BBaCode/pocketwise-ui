@@ -1,0 +1,67 @@
+.account-container {
+  background-color: var(--highlight-bg);
+  color: var(--highlight-text-color);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 2rem 1rem;
+}
+
+.account-information {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.account-name {
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.account-value {
+  font-size: 1.25rem;
+}
+
+.transactions-header {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.transaction-card {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  align-items: center;
+  font-family: Roboto;
+}
+.transaction-left {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.transaction-avatar {
+  margin-right: 0.5rem;
+}
+
+.p-component {
+  box-shadow: none !important;
+}
+
+.spinner-container {
+  width: 100%;
+  height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.no-transactions {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}

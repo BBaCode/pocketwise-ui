@@ -1,0 +1,30 @@
+.landing-page {
+  background-color: var(--highlight-bg);
+  width: 100%;
+  height: calc(100vh);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.hero-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.hero-image {
+  width: 40%;
+  border-radius: 16px;
+}
+
+.app-description {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+:host ::ng-deep .p-element > .p-button {
+  width: 100%;
+}
