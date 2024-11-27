@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   ReactiveFormsModule,
   FormGroup,
@@ -14,6 +14,8 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
+import { AuthService } from '../../core/services/auth-service/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-signup',
@@ -32,10 +34,12 @@ import { DividerModule } from 'primeng/divider';
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss',
 })
-export class SignupComponent {
-  constructor(private user: UserService, private router: Router) {}
+export class SignupComponent implements OnInit, OnDestroy {
+  user: string | undefined = '';
+  errorMessage: string | null = '';
 
-  errorMessage: string = '';
+  // Subscription to the auth store
+  user$: Subscription | undefined;
 
   signupForm = new FormGroup({
     email: new FormControl<string>('', [Validators.required, Validators.email]),
@@ -43,36 +47,50 @@ export class SignupComponent {
       Validators.required,
       Validators.minLength(8),
     ]),
+    firstName: new FormControl<string>('', [Validators.required]),
+    lastName: new FormControl<string>('', [Validators.required]),
   });
 
+  constructor(private auth: AuthService) {}
+
+  ngOnInit(): void {
+    this.user$ = this.auth.userAuth.subscribe((data) => {
+      if (data.user)
+        this.user = data.user.firstName + ' signed up successfully!';
+      this.errorMessage = data.error;
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.user$) this.user$?.unsubscribe();
+  }
+
   onSubmit() {
+    if (typeof window === 'undefined') {
+      console.error('Sign-up can only be executed in a browser environment.');
+      return;
+    }
     if (
-      this.signupForm.value.email !== null &&
-      this.signupForm.value.password !== null &&
-      this.signupForm.value.email !== undefined &&
-      this.signupForm.value.password !== undefined
+      this.signupForm.value.email &&
+      this.signupForm.value.password &&
+      this.signupForm.value.firstName &&
+      this.signupForm.value.lastName
     ) {
-      this.user
-        .registerNewUser(
+      this.auth
+        .signUp(
           this.signupForm.value.email,
-          this.signupForm.value.password
+          this.signupForm.value.password,
+          this.signupForm.value.firstName,
+          this.signupForm.value.lastName
         )
-        .subscribe({
-          next: (data: any) => {
-            console.log(data.message);
-            this.router.navigate(['/login']);
-          },
-          error: (error: any) => {
-            if (error.status === 401) {
-              this.errorMessage =
-                'Invalid email or password. Please try again.';
-            } else {
-              this.errorMessage =
-                'An unexpected error occurred. Please try again later.';
-            }
-            console.error(error);
-          },
-        });
+        .then((data) => {
+          console.log('Sign-up successful: user ', this.user);
+          // navigate to another page
+        })
+        .catch((error) => {
+          console.error('Sign-up failed:', error);
+        })
+        .finally(() => console.log('closed submit'));
     }
   }
 }

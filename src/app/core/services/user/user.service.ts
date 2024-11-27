@@ -22,7 +22,6 @@ export class UserService {
     };
 
     this.userAuthentication = new BehaviorSubject<any>(this.initialData);
-    console.log('init user store:', this.userStore);
   }
 
   registerNewUser(email: string, password: string): Observable<Object> {
