@@ -72,7 +72,7 @@ export class AuthService {
       }
 
       // Store additional user data in the backend
-      await this.storeUserInBackend(userData, firstName, lastName);
+      await this.storeUserInformation(userData, firstName, lastName);
 
       // Update authStore with user info
       this.authStore = {
@@ -91,7 +91,40 @@ export class AuthService {
     }
   }
 
-  private async storeUserInBackend(
+  async login(email: string, password: string) {
+    try {
+      const { data, error } = await this.supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        console.error('Login failed:', error.message);
+        this.authStore.error = error.message;
+        this.broadcastData();
+        return; // Exit early if there's an error
+      }
+
+      const userData = data.user;
+      if (!userData) {
+        console.error('Login succeeded but no user data returned');
+        this.authStore.error = 'Unexpected error: no user data returned';
+        this.broadcastData();
+        return; // Exit if no user data
+      }
+
+      // Store additional user data in the backend
+      await this.getUserFromDb(userData);
+
+      // Update authStore with user info
+    } catch (error: any) {
+      console.error('An error occurred:', error.message);
+      this.authStore.error = error.message;
+      this.broadcastData();
+    }
+  }
+
+  private async storeUserInformation(
     user: User | null,
     firstName: string,
     lastName: string
@@ -113,6 +146,34 @@ export class AuthService {
     if (!response.ok) {
       throw new Error('Failed to store user in backend');
     }
+  }
+
+  private async getUserFromDb(user: User | null) {
+    await fetch('http://localhost:80/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // Authorization: `Bearer ${user?.access_token}`,
+      },
+      body: JSON.stringify({
+        id: user?.id,
+      }),
+    })
+      .then((data) => {
+        console.log(data);
+        // this.authStore = {
+        //   user: {
+        //     email: data.body?.email,
+        //     firstName: data.first_name,
+        //     lastName: data.last_name
+        //   },
+        //   error: null,
+        // };
+        this.broadcastData();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   private broadcastData() {
