@@ -63,30 +63,9 @@ export class LoginComponent {
           this.loginForm.value.email.toLowerCase(),
           this.loginForm.value.password
         )
-        .then(
-          (data) => {
-            this.router.navigate(['/dashboard']);
-          }
-          // {
-
-          // next: (data: any) => {
-          //   this.errorMessage = data.message;
-          //   localStorage.setItem('token', data.token);
-          //   this.user.loadUserAuth(data.token);
-          //   this.router.navigate(['/dashboard']);
-          // },
-          // error: (error: any) => {
-          //   if (error.status === 401) {
-          //     this.errorMessage =
-          //       'Invalid email or password. Please try again.';
-          //   } else {
-          //     this.errorMessage =
-          //       'An unexpected error occurred. Please try again later.';
-          //   }
-          //   console.error(error);
-          // },
-          // }
-        );
+        .then((data) => {
+          this.router.navigate(['/dashboard']);
+        });
     }
   }
 }

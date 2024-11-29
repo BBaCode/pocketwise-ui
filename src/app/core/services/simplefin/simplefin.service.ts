@@ -4,6 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Account, Transaction } from '../../models/account.model';
 import { MOCK_TRANSACTIONS } from '../../mock/mock-transactions';
 import { MOCK_ACCOUNTS } from '../../mock/mock-accounts';
+import { AuthService } from '../auth-service/auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +24,7 @@ export class SimplefinService {
     transactions: [],
   };
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private auth: AuthService) {
     this.store = {
       accounts: null,
       transactions: null,
@@ -90,16 +91,25 @@ export class SimplefinService {
   }
 
   loadNewAccounts(): void {
-    console.log('loading new accounts from simplefin into database');
-    this.http.get(`${this.apiUrl}/new-accounts`).subscribe(
-      () => {
-        // need to add a CTA and real feedback
-        console.log('successfully loaded new accounts');
-      },
-      (error) => {
-        console.error('Failed to load accounts', error);
+    this.auth.getAuthToken().then((token) => {
+      if (token) {
+        console.log('Loading new accounts from SimpleFIN into database');
+        this.http
+          .get(`${this.apiUrl}/new-accounts`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .subscribe(
+            () => {
+              console.log('Successfully loaded new accounts');
+            },
+            (error) => {
+              console.error('Failed to load accounts', error);
+            }
+          );
+      } else {
+        console.error('No auth token found. Cannot load new accounts.');
       }
-    );
+    });
   }
 
   clearTransactions(): void {

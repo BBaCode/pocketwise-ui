@@ -150,6 +150,22 @@ export class AuthService {
     }
   }
 
+  // Add this method to your AuthService
+  async getAuthToken(): Promise<string | null> {
+    try {
+      // Retrieve the current session directly from Supabase
+      const {
+        data: { session },
+      } = await this.supabase.auth.getSession();
+
+      // Extract and return the access token
+      return session?.access_token || null;
+    } catch (error) {
+      console.error('Failed to retrieve auth token:', error);
+      return null;
+    }
+  }
+
   private async storeUserInformation(
     user: User | null,
     firstName: string,
