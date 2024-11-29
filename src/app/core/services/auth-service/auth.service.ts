@@ -112,11 +112,37 @@ export class AuthService {
         this.broadcastData();
         return; // Exit if no user data
       }
-
+      console.log(userData);
       // Store additional user data in the backend
       await this.getUserFromDb(userData);
 
       // Update authStore with user info
+    } catch (error: any) {
+      console.error('An error occurred:', error.message);
+      this.authStore.error = error.message;
+      this.broadcastData();
+    }
+  }
+
+  async logout() {
+    try {
+      const { error } = await this.supabase.auth.signOut({});
+
+      if (error) {
+        console.error('Login failed:', error.message);
+        this.authStore.error = error.message;
+        this.broadcastData();
+        return; // Exit early if there's an error
+      } else {
+        this.authStore = {
+          user: {
+            email: '',
+            firstName: '',
+            lastName: '',
+          },
+          error: null,
+        };
+      }
     } catch (error: any) {
       console.error('An error occurred:', error.message);
       this.authStore.error = error.message;
@@ -149,6 +175,7 @@ export class AuthService {
   }
 
   private async getUserFromDb(user: User | null) {
+    console.log('user, ', user, user?.id);
     await fetch('http://localhost:80/login', {
       method: 'POST',
       headers: {

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MenubarModule } from 'primeng/menubar';
 import { MenuItem } from 'primeng/api';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../core/services/auth-service/auth.service';
 
 @Component({
   selector: 'app-nav',
@@ -11,7 +12,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './nav.component.scss',
 })
 export class NavComponent implements OnInit {
-  constructor() {}
+  constructor(private auth: AuthService) {}
 
   items: MenuItem[] | undefined;
 
@@ -46,7 +47,7 @@ export class NavComponent implements OnInit {
       {
         label: 'Logout',
         command: () => {
-          localStorage.removeItem('token');
+          this.auth.logout();
         },
         routerLink: '/login',
         icon: 'pi pi-sign-out',

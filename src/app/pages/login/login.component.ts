@@ -14,6 +14,7 @@ import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { AuthService } from '../../core/services/auth-service/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -33,7 +34,11 @@ import { InputIconModule } from 'primeng/inputicon';
   styleUrl: './login.component.scss',
 })
 export class LoginComponent {
-  constructor(private user: UserService, private router: Router) {}
+  constructor(
+    private user: UserService,
+    private router: Router,
+    private auth: AuthService
+  ) {}
 
   errorMessage: string = '';
 
@@ -53,29 +58,35 @@ export class LoginComponent {
       this.loginForm.value.password !== undefined
     ) {
       this.errorMessage = '';
-      this.user
+      this.auth
         .login(
           this.loginForm.value.email.toLowerCase(),
           this.loginForm.value.password
         )
-        .subscribe({
-          next: (data: any) => {
-            this.errorMessage = data.message;
-            localStorage.setItem('token', data.token);
-            this.user.loadUserAuth(data.token);
+        .then(
+          (data) => {
             this.router.navigate(['/dashboard']);
-          },
-          error: (error: any) => {
-            if (error.status === 401) {
-              this.errorMessage =
-                'Invalid email or password. Please try again.';
-            } else {
-              this.errorMessage =
-                'An unexpected error occurred. Please try again later.';
-            }
-            console.error(error);
-          },
-        });
+          }
+          // {
+
+          // next: (data: any) => {
+          //   this.errorMessage = data.message;
+          //   localStorage.setItem('token', data.token);
+          //   this.user.loadUserAuth(data.token);
+          //   this.router.navigate(['/dashboard']);
+          // },
+          // error: (error: any) => {
+          //   if (error.status === 401) {
+          //     this.errorMessage =
+          //       'Invalid email or password. Please try again.';
+          //   } else {
+          //     this.errorMessage =
+          //       'An unexpected error occurred. Please try again later.';
+          //   }
+          //   console.error(error);
+          // },
+          // }
+        );
     }
   }
 }
