@@ -26,6 +26,6 @@ interface Org {
 }
 
 export interface DataStore {
-  accounts: Array<Account>;
-  transactions: Array<Transaction>;
+  accounts: Array<Account> | null;
+  transactions: Array<Transaction> | null;
 }

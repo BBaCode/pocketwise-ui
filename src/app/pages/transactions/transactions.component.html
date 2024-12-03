@@ -4,6 +4,21 @@
       ><p-chart type="pie" [data]="chartData" [options]="options"
     /></p-card>
   </div>
+  <div
+    class="transactions-categories"
+    *ngIf="nonCategorizedTransactions && nonCategorizedTransactions.length > 0"
+  >
+    <p-card>
+      <div class="uncategorized-transactions">
+        <div>
+          You have
+          <span>{{ nonCategorizedTransactions.length }}</span> uncategorized
+          transactions.
+        </div>
+        <p-button> Click to categorize</p-button>
+      </div>
+    </p-card>
+  </div>
   <div class="transactions-categories">
     <p-card>
       <div *ngFor="let category of categoryArray">

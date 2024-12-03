@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Account, Transaction } from '../../models/account.model';
+import { Account, DataStore, Transaction } from '../../models/account.model';
 import { MOCK_TRANSACTIONS } from '../../mock/mock-transactions';
 import { MOCK_ACCOUNTS } from '../../mock/mock-accounts';
 import { AuthService } from '../auth/auth.service';
@@ -12,7 +12,7 @@ import { AuthService } from '../auth/auth.service';
 export class DataStoreService {
   private useMockData = false; // Toggle this to use mock data
   // behavior subject to be subscribed to by everyone
-  dataStore: BehaviorSubject<any>;
+  dataStore: BehaviorSubject<DataStore>;
   private apiUrl = 'http://localhost:80';
   private store: {
     accounts: Array<Account> | null;

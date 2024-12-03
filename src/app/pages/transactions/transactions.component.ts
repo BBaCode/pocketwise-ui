@@ -8,6 +8,8 @@ import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
 import { FormatDollarPipe } from '../../core/pipes/format-dollar.pipe';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { DropdownModule } from 'primeng/dropdown';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-transactions',
@@ -19,6 +21,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     DividerModule,
     FormatDollarPipe,
     ProgressSpinnerModule,
+    DropdownModule,
+    ButtonModule,
   ],
   templateUrl: './transactions.component.html',
   styleUrl: './transactions.component.scss',
@@ -26,6 +30,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 export class TransactionsComponent implements OnInit {
   transactions$: Subscription = new Subscription();
   transactionData: Transaction[] | null = null;
+  nonCategorizedTransactions: Transaction[] | null = null;
   dataLoaded: boolean = false;
   chartData: any;
   options: any;
@@ -46,6 +51,7 @@ export class TransactionsComponent implements OnInit {
     '#3F51B5',
     '#D32F2F',
     '#5D4037',
+    '#138A36',
     '#9C27B0',
   ];
 
@@ -54,10 +60,19 @@ export class TransactionsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.dataStore.getAllTransactions();
+    // may not need because its called in the dashboard
+    if (!this.dataStore.dataStore.value.transactions)
+      this.dataStore.getAllTransactions();
     this.transactions$ = this.dataStore.dataStore.subscribe(
       (data: DataStore) => {
+        if (!this.transactionData) this.refresh();
         this.transactionData = data.transactions;
+        if (this.transactionData) {
+          this.nonCategorizedTransactions = this.transactionData?.filter(
+            (txn) => txn.category === 'Other'
+          );
+        }
+        console.log(this.nonCategorizedTransactions);
         this.categoryArray = this.separateCategories(this.transactionData);
         this.buildChartData(this.categoryArray);
         this.dataLoaded = true;
@@ -88,6 +103,7 @@ export class TransactionsComponent implements OnInit {
       Insurance: 0,
       'Personal Care': 0,
       Other: 0,
+      Income: 0,
     };
 
     // Accumulate transaction amounts into categories
@@ -126,5 +142,8 @@ export class TransactionsComponent implements OnInit {
         },
       },
     };
+  }
+  async refresh() {
+    await this.dataStore.getAllTransactions();
   }
 }

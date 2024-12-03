@@ -50,11 +50,14 @@ export class AccountComponent implements OnInit, OnDestroy {
     if (this.accountId) {
       this.transactions$ = this.dataStoreService.dataStore.subscribe(
         (data: DataStore) => {
-          this.account = data.accounts.find((acc) => acc.id === this.accountId);
-          if (!this.transactions) this.refresh();
-          this.transactions = data.transactions.filter(
-            (txn) => txn.account_id === this.accountId
+          this.account = data.accounts?.find(
+            (acc) => acc.id === this.accountId
           );
+          if (!this.transactions) this.refresh();
+          this.transactions =
+            data.transactions?.filter(
+              (txn) => txn.account_id === this.accountId
+            ) || null;
           this.transactionsLoaded = !!this.transactions;
         }
       );
