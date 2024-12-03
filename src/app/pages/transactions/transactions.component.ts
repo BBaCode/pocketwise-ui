@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
-import { SimplefinService } from '../../core/services/simplefin/simplefin.service';
+import { DataStoreService } from '../../core/services/data-store/data-store.service';
 import { Subscription } from 'rxjs';
 import { DataStore, Transaction } from '../../core/models/account.model';
 import { CommonModule } from '@angular/common';
@@ -49,20 +49,18 @@ export class TransactionsComponent implements OnInit {
     '#9C27B0',
   ];
 
-  constructor(private sf: SimplefinService) {
+  constructor(private sf: DataStoreService) {
     this.dataLoaded = false;
   }
 
   ngOnInit() {
     this.sf.getAllTransactions();
-    this.transactions$ = this.sf.simplefinDataStore.subscribe(
-      (data: DataStore) => {
-        this.transactionData = data.transactions;
-        this.categoryArray = this.separateCategories(this.transactionData);
-        this.buildChartData(this.categoryArray);
-        this.dataLoaded = true;
-      }
-    );
+    this.transactions$ = this.sf.dataStore.subscribe((data: DataStore) => {
+      this.transactionData = data.transactions;
+      this.categoryArray = this.separateCategories(this.transactionData);
+      this.buildChartData(this.categoryArray);
+      this.dataLoaded = true;
+    });
   }
 
   setCategoryColor(category: any) {
