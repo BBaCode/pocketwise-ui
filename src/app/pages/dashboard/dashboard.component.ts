@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { SimplefinService } from '../../core/services/simplefin/simplefin.service';
+import { DataStoreService } from '../../core/services/data-store/data-store.service';
 import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
 import { CommonModule } from '@angular/common';
@@ -32,8 +32,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   mockBalance: string = '100000.00';
   mockBalanceInt: number = parseInt(this.mockBalance);
 
-  constructor(private sf: SimplefinService, private router: Router) {
-    this.accounts$ = sf.simplefinDataStore.subscribe((data) => {
+  constructor(
+    private dataStoreService: DataStoreService,
+    private router: Router
+  ) {
+    this.accounts$ = dataStoreService.dataStore.subscribe((data) => {
       this.accountList = data.accounts;
       this.sortAccountByType();
       this.netWorth = 0;
@@ -45,7 +48,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.accountsLoaded = false;
-    this.sf.getAccounts();
+    this.dataStoreService.getAccounts();
+    this.dataStoreService.getAllTransactions();
     console.log('db inited');
   }
 

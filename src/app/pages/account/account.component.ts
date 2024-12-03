@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { SimplefinService } from '../../core/services/simplefin/simplefin.service';
+import { DataStoreService } from '../../core/services/data-store/data-store.service';
 import {
   Account,
   DataStore,
@@ -38,18 +38,23 @@ export class AccountComponent implements OnInit, OnDestroy {
   transactions: Transaction[] | null = null;
   transactionsLoaded: boolean = false;
 
-  constructor(private route: ActivatedRoute, private sf: SimplefinService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private dataStoreService: DataStoreService
+  ) {}
 
   ngOnInit(): void {
     console.log('ngoninit begins', this.transactionsLoaded);
     this.transactionsLoaded = false;
     this.accountId = this.route.snapshot.paramMap.get('id');
     if (this.accountId) {
-      this.sf.getTransactionsForAccount(this.accountId);
-      this.transactions$ = this.sf.simplefinDataStore.subscribe(
+      this.transactions$ = this.dataStoreService.dataStore.subscribe(
         (data: DataStore) => {
           this.account = data.accounts.find((acc) => acc.id === this.accountId);
-          this.transactions = data.transactions;
+          if (!this.transactions) this.refresh();
+          this.transactions = data.transactions.filter(
+            (txn) => txn.account_id === this.accountId
+          );
           this.transactionsLoaded = !!this.transactions;
         }
       );
@@ -70,5 +75,9 @@ export class AccountComponent implements OnInit, OnDestroy {
 
   assignIconColor(category: string) {
     return { 'background-color': ColorCategories[category], color: '#1a2551' };
+  }
+
+  async refresh() {
+    await this.dataStoreService.getAllTransactions();
   }
 }

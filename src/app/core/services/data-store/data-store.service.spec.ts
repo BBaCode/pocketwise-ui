@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SimplefinService } from './simplefin.service';
+import { DataStoreService } from './data-store.service';
 
 describe('SimplefinService', () => {
-  let service: SimplefinService;
+  let service: DataStoreService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(SimplefinService);
+    service = TestBed.inject(DataStoreService);
   });
 
   it('should be created', () => {

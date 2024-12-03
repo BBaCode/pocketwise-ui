@@ -9,10 +9,10 @@ import { AuthService } from '../auth-service/auth.service';
 @Injectable({
   providedIn: 'root',
 })
-export class SimplefinService {
+export class DataStoreService {
   private useMockData = false; // Toggle this to use mock data
   // behavior subject to be subscribed to by everyone
-  simplefinDataStore: BehaviorSubject<any>;
+  dataStore: BehaviorSubject<any>;
   private apiUrl = 'http://localhost:80';
   private store: {
     accounts: Array<Account> | null;
@@ -30,7 +30,7 @@ export class SimplefinService {
       transactions: null,
     };
 
-    this.simplefinDataStore = new BehaviorSubject<any>(this.initialData);
+    this.dataStore = new BehaviorSubject<any>(this.initialData);
     this.getAccounts();
   }
 
@@ -61,10 +61,30 @@ export class SimplefinService {
   }
 
   // only mocked at this point, need to add to backend
-  getAllTransactions(): void {
+  async getAllTransactions(): Promise<void> {
     if (this.useMockData) {
       this.store.transactions = MOCK_TRANSACTIONS;
       this.updateConsumers();
+    } else {
+      console.log('Fetching all transactions from API');
+      const token = await this.auth.getAuthToken();
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+
+      this.http
+        .get(`${this.apiUrl}/all-transactions`, {
+          headers: headers,
+        })
+        .subscribe(
+          (data: any) => {
+            this.store.transactions = data;
+            this.updateConsumers();
+          },
+          (error) => {
+            console.error('Failed to load transactions', error);
+          }
+        );
     }
   }
 
@@ -72,11 +92,11 @@ export class SimplefinService {
     if (this.useMockData) {
       console.log(`Using mock transactions for account ${accountId}`);
       this.store.transactions = MOCK_TRANSACTIONS.filter(
-        (transaction: Transaction) => transaction.accountId === accountId
+        (transaction: Transaction) => transaction.account_id === accountId
       );
       this.updateConsumers();
     } else {
-      console.log('Fetching transactions from API');
+      console.log(`Fetching transactions from API for account ${accountId}`);
 
       const token = await this.auth.getAuthToken();
       const headers = {
@@ -129,12 +149,12 @@ export class SimplefinService {
   clearTransactions(): void {
     this.store.transactions = null;
     this.updateConsumers();
-    console.log('cleared transactions', this.simplefinDataStore);
+    console.log('cleared transactions', this.dataStore);
   }
 
   // when next is called, all subscribers get the new data
   private updateConsumers() {
-    this.simplefinDataStore.next({ ...this.store });
-    console.log('updating consumers', this.simplefinDataStore);
+    this.dataStore.next({ ...this.store });
+    console.log('updating consumers', this.dataStore);
   }
 }

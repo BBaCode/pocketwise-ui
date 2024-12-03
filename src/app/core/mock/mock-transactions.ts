@@ -3,7 +3,7 @@ import { Transaction } from '../models/account.model';
 export const MOCK_TRANSACTIONS: Transaction[] = [
   {
     id: 't1',
-    accountId: '1',
+    account_id: '1',
     posted: Date.now() - 86400000, // 1 day ago
     amount: '-50.00',
     description: 'Grocery Store',
@@ -14,7 +14,7 @@ export const MOCK_TRANSACTIONS: Transaction[] = [
   },
   {
     id: 't2',
-    accountId: '1',
+    account_id: '1',
     posted: Date.now() - 172800000, // 2 days ago
     amount: '-25.00',
     description: 'Coffee Shop',
@@ -25,7 +25,7 @@ export const MOCK_TRANSACTIONS: Transaction[] = [
   },
   {
     id: 't1',
-    accountId: '1',
+    account_id: '1',
     posted: Date.now() - 86400000, // 1 day ago
     amount: '-50.00',
     description: 'Grocery Store',
@@ -36,7 +36,7 @@ export const MOCK_TRANSACTIONS: Transaction[] = [
   },
   {
     id: 't3',
-    accountId: '3',
+    account_id: '3',
     posted: Date.now() - 172800000, // 2 days ago
     amount: '-25.00',
     description: 'Coffee Shop',
@@ -47,7 +47,7 @@ export const MOCK_TRANSACTIONS: Transaction[] = [
   },
   {
     id: 't4',
-    accountId: '3',
+    account_id: '3',
     posted: Date.now() - 172800000, // 2 days ago
     amount: '-225.00',
     description: 'LifeTime Fitness',
