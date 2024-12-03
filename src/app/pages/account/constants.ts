@@ -14,6 +14,7 @@ export const Categories: any = {
   Insurance: 'shield',
   'Personal Care': 'shower',
   Other: 'question',
+  Income: 'money-bill',
 };
 
 export const ColorCategories: any = {
@@ -32,4 +33,5 @@ export const ColorCategories: any = {
   Insurance: '#799AA3', // Grayish Blue
   'Personal Care': '#B685A2', // Muted Pink
   Other: '#6E635D', // Warm Gray
+  Income: '#138A36', //Forest Green
 };

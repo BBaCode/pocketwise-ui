@@ -49,18 +49,20 @@ export class TransactionsComponent implements OnInit {
     '#9C27B0',
   ];
 
-  constructor(private sf: DataStoreService) {
+  constructor(private dataStore: DataStoreService) {
     this.dataLoaded = false;
   }
 
   ngOnInit() {
-    this.sf.getAllTransactions();
-    this.transactions$ = this.sf.dataStore.subscribe((data: DataStore) => {
-      this.transactionData = data.transactions;
-      this.categoryArray = this.separateCategories(this.transactionData);
-      this.buildChartData(this.categoryArray);
-      this.dataLoaded = true;
-    });
+    this.dataStore.getAllTransactions();
+    this.transactions$ = this.dataStore.dataStore.subscribe(
+      (data: DataStore) => {
+        this.transactionData = data.transactions;
+        this.categoryArray = this.separateCategories(this.transactionData);
+        this.buildChartData(this.categoryArray);
+        this.dataLoaded = true;
+      }
+    );
   }
 
   setCategoryColor(category: any) {

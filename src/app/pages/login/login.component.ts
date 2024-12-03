@@ -8,13 +8,12 @@ import {
 } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { UserService } from '../../core/services/user/user.service';
 import { Router, RouterLink } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
-import { AuthService } from '../../core/services/auth-service/auth.service';
+import { AuthService } from '../../core/services/auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -34,11 +33,7 @@ import { AuthService } from '../../core/services/auth-service/auth.service';
   styleUrl: './login.component.scss',
 })
 export class LoginComponent {
-  constructor(
-    private user: UserService,
-    private router: Router,
-    private auth: AuthService
-  ) {}
+  constructor(private router: Router, private auth: AuthService) {}
 
   errorMessage: string = '';
 
