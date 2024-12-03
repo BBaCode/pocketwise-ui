@@ -5,6 +5,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
+
+// POTENTIALLY DONT NEED??
 export class UserService {
   private registerUrl = 'http://localhost:80';
   userAuthentication: BehaviorSubject<any>;
@@ -37,15 +39,6 @@ export class UserService {
       email: email,
       password: password,
     });
-  }
-
-  loadUserAuth(token: string) {
-    this.userStore.token = token;
-    this.updateConsumers();
-  }
-
-  getToken() {
-    return localStorage.getItem('token');
   }
 
   // when next is called, all subscribers get the new data

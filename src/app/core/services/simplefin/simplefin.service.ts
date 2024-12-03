@@ -10,7 +10,7 @@ import { AuthService } from '../auth-service/auth.service';
   providedIn: 'root',
 })
 export class SimplefinService {
-  private useMockData = true; // Toggle this to use mock data
+  private useMockData = false; // Toggle this to use mock data
   // behavior subject to be subscribed to by everyone
   simplefinDataStore: BehaviorSubject<any>;
   private apiUrl = 'http://localhost:80';
@@ -34,16 +34,23 @@ export class SimplefinService {
     this.getAccounts();
   }
 
-  getAccounts(): void {
+  async getAccounts(): Promise<void> {
     if (this.useMockData) {
       console.log('Using mock accounts');
       this.store.accounts = MOCK_ACCOUNTS;
       this.updateConsumers();
     } else {
       console.log('Fetching accounts from API');
-      this.http.get(`${this.apiUrl}/accounts`).subscribe(
+
+      const token = await this.auth.getAuthToken();
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+
+      console.log(headers);
+      this.http.get(`${this.apiUrl}/accounts`, { headers: headers }).subscribe(
         (data: any) => {
-          this.store.accounts = data.accounts;
+          this.store.accounts = data;
           this.updateConsumers();
         },
         (error) => {
@@ -61,7 +68,7 @@ export class SimplefinService {
     }
   }
 
-  getTransactionsForAccount(accountId: string): void {
+  async getTransactionsForAccount(accountId: string): Promise<void> {
     if (this.useMockData) {
       console.log(`Using mock transactions for account ${accountId}`);
       this.store.transactions = MOCK_TRANSACTIONS.filter(
@@ -70,12 +77,19 @@ export class SimplefinService {
       this.updateConsumers();
     } else {
       console.log('Fetching transactions from API');
+
+      const token = await this.auth.getAuthToken();
+      const headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      };
+
       this.http
         .post(
           `${this.apiUrl}/transactions`,
           { account: accountId },
           {
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
           }
         )
         .subscribe(
