@@ -1,4 +1,23 @@
-export const Categories: any = {
+export const CATEGORIES: any = [
+  { name: 'Food & Dining' },
+  { name: 'Groceries' },
+  { name: 'Transportation' },
+  { name: 'Entertainment' },
+  { name: 'Health & Wellness' },
+  { name: 'Shopping' },
+  { name: 'Utilities' },
+  { name: 'Rent' },
+  { name: 'Travel' },
+  { name: 'Education' },
+  { name: 'Subscriptions' },
+  { name: 'Gifts & Donations' },
+  { name: 'Insurance' },
+  { name: 'Personal Care' },
+  { name: 'Other' },
+  { name: 'Income' },
+];
+
+export const CATEGORY_ICONS: any = {
   'Food & Dining': 'utensils',
   Groceries: 'cart-shopping',
   Transportation: 'car',
@@ -17,7 +36,7 @@ export const Categories: any = {
   Income: 'money-bill',
 };
 
-export const ColorCategories: any = {
+export const COLOR_CATEGORIES: any = {
   'Food & Dining': '#A26769', // Dusty Rose
   Groceries: '#D4A373', // Muted Sand
   Transportation: '#6B9080', // Soft Teal

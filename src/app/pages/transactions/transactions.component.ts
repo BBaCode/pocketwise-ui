@@ -8,8 +8,8 @@ import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
 import { FormatDollarPipe } from '../../core/pipes/format-dollar.pipe';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
+import { UpdateTransactionComponent } from '../update-transaction/update-transaction.component';
 
 @Component({
   selector: 'app-transactions',
@@ -21,13 +21,14 @@ import { ButtonModule } from 'primeng/button';
     DividerModule,
     FormatDollarPipe,
     ProgressSpinnerModule,
-    DropdownModule,
     ButtonModule,
+    UpdateTransactionComponent,
   ],
   templateUrl: './transactions.component.html',
   styleUrl: './transactions.component.scss',
 })
 export class TransactionsComponent implements OnInit {
+  isDialogOpen: boolean = false;
   transactions$: Subscription = new Subscription();
   transactionData: Transaction[] | null = null;
   nonCategorizedTransactions: Transaction[] | null = null;
@@ -145,5 +146,12 @@ export class TransactionsComponent implements OnInit {
   }
   async refresh() {
     await this.dataStore.getAllTransactions();
+  }
+  toggleDialog() {
+    this.isDialogOpen = true; // Open the dialog
+  }
+
+  handleDialogClose() {
+    this.isDialogOpen = false; // Handle dialog close event
   }
 }

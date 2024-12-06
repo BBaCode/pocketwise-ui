@@ -14,7 +14,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { FormatDollarPipe } from '../../core/pipes/format-dollar.pipe';
 import { Subscription } from 'rxjs';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { Categories, ColorCategories } from './constants';
+import { CATEGORY_ICONS, COLOR_CATEGORIES } from '../../core/constants';
 
 @Component({
   selector: 'app-account',
@@ -73,11 +73,11 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   assignIcon(category: string) {
-    return `fa-solid fa-${Categories[category]}`;
+    return `fa-solid fa-${CATEGORY_ICONS[category]}`;
   }
 
   assignIconColor(category: string) {
-    return { 'background-color': ColorCategories[category], color: '#1a2551' };
+    return { 'background-color': COLOR_CATEGORIES[category], color: '#1a2551' };
   }
 
   async refresh() {

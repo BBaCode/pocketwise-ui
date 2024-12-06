@@ -1,0 +1,27 @@
+<p-dialog
+  header="Update Transaction Category"
+  [modal]="true"
+  [(visible)]="isVisible"
+  [style]="{ width: '25rem' }"
+  (onHide)="onDialogClose()"
+>
+  <div>
+    <div *ngFor="let txn of uncategorizedTransactions">
+      <div>
+        <p-card>
+          <div>
+            <div>{{ txn.payee }}</div>
+            <div>{{ txn.amount }}</div>
+            <div>{{ txn.category }}</div>
+          </div>
+          <p-dropdown
+            [options]="categories"
+            optionLabel="name"
+            placeholder="Select a Category"
+          ></p-dropdown>
+        </p-card>
+      </div>
+    </div>
+  </div>
+  <p-button (onClick)="onDialogClose()">Close</p-button>
+</p-dialog>

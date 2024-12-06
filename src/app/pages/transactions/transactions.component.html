@@ -15,10 +15,15 @@
           <span>{{ nonCategorizedTransactions.length }}</span> uncategorized
           transactions.
         </div>
-        <p-button> Click to categorize</p-button>
+        <p-button (onClick)="toggleDialog()"> Click to categorize</p-button>
       </div>
     </p-card>
   </div>
+  <app-update-transaction
+    [uncategorizedTransactions]="nonCategorizedTransactions"
+    [isVisible]="isDialogOpen"
+    (close)="handleDialogClose()"
+  ></app-update-transaction>
   <div class="transactions-categories">
     <p-card>
       <div *ngFor="let category of categoryArray">
