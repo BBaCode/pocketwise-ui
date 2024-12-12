@@ -5,8 +5,8 @@ import { Pipe, PipeTransform } from '@angular/core';
   standalone: true,
 })
 export class FormatDollarPipe implements PipeTransform {
-  transform(value: string): string {
-    const number = parseFloat(value);
+  transform(value: string | number): string {
+    const number = typeof value === 'string' ? parseFloat(value) : value;
     return new Intl.NumberFormat('en-US', {
       currencySign: 'standard',
       currency: 'USD',

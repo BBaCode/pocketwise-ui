@@ -10,6 +10,11 @@ export interface Transaction {
   category: string;
 }
 
+export interface TransactionToUpdate {
+  id: string;
+  category: string;
+}
+
 export interface Account {
   id: string;
   name: string;

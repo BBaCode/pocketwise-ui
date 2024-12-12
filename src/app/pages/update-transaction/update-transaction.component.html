@@ -3,25 +3,25 @@
   [modal]="true"
   [(visible)]="isVisible"
   [style]="{ width: '25rem' }"
-  (onHide)="onDialogClose()"
 >
-  <div>
+  <form [formGroup]="updateTxnsForm" (ngSubmit)="onSubmit()">
     <div *ngFor="let txn of uncategorizedTransactions">
-      <div>
-        <p-card>
-          <div>
-            <div>{{ txn.payee }}</div>
-            <div>{{ txn.amount }}</div>
-            <div>{{ txn.category }}</div>
-          </div>
-          <p-dropdown
-            [options]="categories"
-            optionLabel="name"
-            placeholder="Select a Category"
-          ></p-dropdown>
-        </p-card>
-      </div>
+      <p-card>
+        <div><strong>Description:</strong> {{ txn.description }}</div>
+        <div><strong>Amount:</strong> {{ txn.amount | formatDollar }}</div>
+        <p-dropdown
+          [options]="categories"
+          optionLabel="name"
+          placeholder="Select a Category"
+          formControlName="{{ txn.id }}"
+        ></p-dropdown>
+      </p-card>
     </div>
-  </div>
-  <p-button (onClick)="onDialogClose()">Close</p-button>
+    <p-button
+      type="submit"
+      pRipple
+      label="Submit"
+      [disabled]="!updateTxnsForm.valid"
+    ></p-button>
+  </form>
 </p-dialog>

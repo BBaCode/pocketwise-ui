@@ -1,7 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Account, DataStore, Transaction } from '../../models/account.model';
+import {
+  Account,
+  DataStore,
+  Transaction,
+  TransactionToUpdate,
+} from '../../models/account.model';
 import { MOCK_TRANSACTIONS } from '../../mock/mock-transactions';
 import { MOCK_ACCOUNTS } from '../../mock/mock-accounts';
 import { AuthService } from '../auth/auth.service';
@@ -85,6 +90,33 @@ export class DataStoreService {
           }
         );
     }
+  }
+
+  async updateTransactions(updatedTxns: TransactionToUpdate[]): Promise<void> {
+    const token = await this.auth.getAuthToken();
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    };
+
+    this.http
+      .put(
+        `${this.apiUrl}/update-transactions`,
+        { updatedTxns },
+        {
+          headers: headers,
+        }
+      )
+      .subscribe(
+        (data: any) => {
+          this.store.transactions = data;
+          this.updateConsumers();
+          console.log(data);
+        },
+        (error) => {
+          console.error('Failed to load transactions', error);
+        }
+      );
   }
 
   // NOT USING RIGHT NOW
