@@ -26,6 +26,9 @@
     </div>
   </div>
 </div>
-<div *ngIf="!accountsLoaded" class="spinner-container">
+<div *ngIf="!accountsLoaded && !serverError" class="spinner-container">
+  <p-progressSpinner ariaLabel="loading" />
+</div>
+<div *ngIf="!accountsLoaded && serverError" class="spinner-container">
   <p-progressSpinner ariaLabel="loading" />
 </div>

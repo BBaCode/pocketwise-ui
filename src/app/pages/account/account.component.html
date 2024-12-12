@@ -12,7 +12,10 @@
     <div>Recent Transactions</div>
   </div>
   <div *ngFor="let transaction of transactions">
-    <div class="transaction-card">
+    <div
+      class="transaction-card"
+      (click)="navigateToTransaction(transaction.id)"
+    >
       <div class="transaction-left">
         <p-avatar
           class="transaction-avatar"
@@ -28,8 +31,6 @@
       </div>
       <span>{{ transaction.amount | formatDollar }}</span>
     </div>
-
-    <!-- Add other info as needed -->
   </div>
 </div>
 

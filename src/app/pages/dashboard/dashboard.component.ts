@@ -29,6 +29,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   accountList: Account[] | null = null;
   accountsLoaded: boolean = false;
   netWorth: number = 0;
+  serverError: string = '';
 
   //mocked for testing to not use my real accounts
   mockBalance: string = '100000.00';
@@ -39,12 +40,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private router: Router
   ) {
     this.accounts$ = dataStoreService.dataStore.subscribe((data) => {
+      console.log('server error when trying to get data', this.serverError);
       this.accountList = data.accounts;
       this.sortAccountByType();
       this.netWorth = 0;
       this.generateNetWorth();
       this.accountsLoaded = true;
       console.log('db constructed, account list:', this.accountList);
+      // if (!this.accountList) {
+      //   setTimeout(() => {
+      //     this.serverError = 'Server is down, please try again later.';
+      //     console.log(
+      //       'server error after trying to get data',
+      //       this.serverError
+      //     );
+      //   }, 10000);
+      // }
     });
   }
 

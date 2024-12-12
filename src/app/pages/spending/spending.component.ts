@@ -10,9 +10,10 @@ import { FormatDollarPipe } from '../../core/pipes/format-dollar.pipe';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ButtonModule } from 'primeng/button';
 import { UpdateTransactionComponent } from '../update-transaction/update-transaction.component';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-transactions',
+  selector: 'app-spending',
   standalone: true,
   imports: [
     ChartModule,
@@ -24,10 +25,10 @@ import { UpdateTransactionComponent } from '../update-transaction/update-transac
     ButtonModule,
     UpdateTransactionComponent,
   ],
-  templateUrl: './transactions.component.html',
-  styleUrl: './transactions.component.scss',
+  templateUrl: './spending.component.html',
+  styleUrl: './spending.component.scss',
 })
-export class TransactionsComponent implements OnInit {
+export class SpendingComponent implements OnInit {
   isDialogOpen: boolean = false;
   transactions$: Subscription = new Subscription();
   transactionData: Transaction[] | null = null;

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DataStoreService } from '../../core/services/data-store/data-store.service';
 import {
   Account,
@@ -14,7 +14,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { FormatDollarPipe } from '../../core/pipes/format-dollar.pipe';
 import { Subscription } from 'rxjs';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { CATEGORY_ICONS, COLOR_CATEGORIES } from '../../core/constants';
+import { assignIcon, assignIconColor } from '../../core/utils/style.util';
 
 @Component({
   selector: 'app-account',
@@ -37,10 +37,13 @@ export class AccountComponent implements OnInit, OnDestroy {
   transactions$: Subscription = new Subscription();
   transactions: Transaction[] | null = null;
   transactionsLoaded: boolean = false;
+  assignIcon = assignIcon;
+  assignIconColor = assignIconColor;
 
   constructor(
     private route: ActivatedRoute,
-    private dataStoreService: DataStoreService
+    private dataStoreService: DataStoreService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -55,9 +58,14 @@ export class AccountComponent implements OnInit, OnDestroy {
           );
           if (!this.transactions) this.refresh();
           this.transactions =
-            data.transactions?.filter(
-              (txn) => txn.account_id === this.accountId
-            ) || null;
+            data.transactions
+              ?.filter((txn) => txn.account_id === this.accountId)
+              ?.sort((a, b) => {
+                const dateA = new Date(a.transacted_at).getTime();
+                const dateB = new Date(b.transacted_at).getTime();
+                return dateB - dateA; // Sort in descending order (newest first)
+              }) || null;
+
           this.transactionsLoaded = !!this.transactions;
         }
       );
@@ -72,15 +80,11 @@ export class AccountComponent implements OnInit, OnDestroy {
     this.transactionsLoaded = false;
   }
 
-  assignIcon(category: string) {
-    return `fa-solid fa-${CATEGORY_ICONS[category]}`;
-  }
-
-  assignIconColor(category: string) {
-    return { 'background-color': COLOR_CATEGORIES[category], color: '#1a2551' };
-  }
-
   async refresh() {
     await this.dataStoreService.getAllTransactions();
+  }
+
+  navigateToTransaction(id: string) {
+    this.router.navigate(['/transaction', id]);
   }
 }

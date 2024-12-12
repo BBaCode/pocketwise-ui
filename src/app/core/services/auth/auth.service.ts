@@ -115,7 +115,6 @@ export class AuthService {
       console.log(userData);
       // Store additional user data in the backend
       await this.getUserFromDb(userData);
-
       // Update authStore with user info
     } catch (error: any) {
       console.error('An error occurred:', error.message);
@@ -135,13 +134,10 @@ export class AuthService {
         return; // Exit early if there's an error
       } else {
         this.authStore = {
-          user: {
-            email: '',
-            firstName: '',
-            lastName: '',
-          },
+          user: null,
           error: null,
         };
+        this.broadcastData();
       }
     } catch (error: any) {
       console.error('An error occurred:', error.message);
@@ -150,7 +146,6 @@ export class AuthService {
     }
   }
 
-  // Add this method to your AuthService
   async getAuthToken(): Promise<string | null> {
     try {
       // Retrieve the current session directly from Supabase
@@ -202,16 +197,28 @@ export class AuthService {
         id: user?.id,
       }),
     })
-      .then((data) => {
+      .then((response) => {
+        console.log('BDB Response:', response);
+        if (!response.ok) {
+          throw new Error('Failed to login');
+        }
+        // Ensure the body is used correctly
+        return response.text(); // Use `text` instead of `json` temporarily
+      })
+      .then((text) => {
+        console.log('BDB Response Body:', text); // Log raw response body
+        return JSON.parse(text); // Manually parse JSON to catch any errors
+      })
+      .then((data: any) => {
         console.log(data);
-        // this.authStore = {
-        //   user: {
-        //     email: data.body?.email,
-        //     firstName: data.first_name,
-        //     lastName: data.last_name
-        //   },
-        //   error: null,
-        // };
+        this.authStore = {
+          user: {
+            email: data.data.email,
+            firstName: data.data.first_name,
+            lastName: data.data.last_name,
+          },
+          error: null,
+        };
         this.broadcastData();
       })
       .catch((error) => {
