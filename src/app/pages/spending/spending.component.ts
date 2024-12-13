@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
 import { DataStoreService } from '../../core/services/data-store/data-store.service';
 import { Subscription } from 'rxjs';
@@ -10,7 +10,8 @@ import { FormatDollarPipe } from '../../core/pipes/format-dollar.pipe';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ButtonModule } from 'primeng/button';
 import { UpdateTransactionComponent } from '../update-transaction/update-transaction.component';
-import { Router } from '@angular/router';
+import { MonthlyChartComponent } from '../monthly-chart/monthly-chart.component';
+import { format } from 'date-fns';
 
 @Component({
   selector: 'app-spending',
@@ -24,6 +25,7 @@ import { Router } from '@angular/router';
     ProgressSpinnerModule,
     ButtonModule,
     UpdateTransactionComponent,
+    MonthlyChartComponent,
   ],
   templateUrl: './spending.component.html',
   styleUrl: './spending.component.scss',
@@ -36,6 +38,10 @@ export class SpendingComponent implements OnInit {
   dataLoaded: boolean = false;
   chartData: any;
   options: any;
+  months: any;
+  totals: any;
+  currentMonth: string = '';
+
   categoryArray: { name: string; value: number; color: string }[] = []; // Array for labels and amounts
   colorPalette: string[] = [
     '#FF6384',
@@ -57,15 +63,19 @@ export class SpendingComponent implements OnInit {
     '#9C27B0',
   ];
 
-  constructor(private dataStore: DataStoreService) {
+  constructor(
+    private dataStore: DataStoreService,
+    private cdr: ChangeDetectorRef
+  ) {
     this.dataLoaded = false;
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    console.log('BBB init component');
     // may not need because its called in the dashboard
     if (!this.dataStore.dataStore.value.transactions)
       this.dataStore.getAllTransactions();
-    this.transactions$ = this.dataStore.dataStore.subscribe(
+    this.transactions$ = await this.dataStore.dataStore.subscribe(
       (data: DataStore) => {
         if (!this.transactionData) this.refresh();
         this.transactionData = data.transactions;
@@ -73,11 +83,8 @@ export class SpendingComponent implements OnInit {
           this.nonCategorizedTransactions = this.transactionData?.filter(
             (txn) => txn.category === 'Other'
           );
+          this.getMonthlySpend(this.transactionData);
         }
-        console.log(this.nonCategorizedTransactions);
-        this.categoryArray = this.separateCategories(this.transactionData);
-        this.buildChartData(this.categoryArray);
-        this.dataLoaded = true;
       }
     );
   }
@@ -154,5 +161,50 @@ export class SpendingComponent implements OnInit {
 
   handleDialogClose() {
     this.isDialogOpen = false; // Handle dialog close event
+  }
+
+  getMonthlySpend(transactions: Transaction[]) {
+    // Use a Map to aggregate totals by month
+    const monthlyTotals = new Map<string, number>();
+
+    // Iterate over transactions
+    for (const transaction of transactions) {
+      // Convert the UNIX timestamp to a month code (e.g., 'Jan')
+      const monthCode = format(
+        new Date(transaction.transacted_at * 1000),
+        'MMM'
+      );
+
+      // Add the transaction amount to the corresponding month
+      const amount = parseFloat(transaction.amount); // Convert string amount to number
+      monthlyTotals.set(
+        monthCode,
+        (monthlyTotals.get(monthCode) || 0) + amount
+      );
+      console.log('BBB monthly spend gotten', monthlyTotals);
+    }
+
+    // Convert the Map to two arrays
+    this.months = Array.from(monthlyTotals.keys());
+    this.totals = Array.from(monthlyTotals.values());
+    this.currentMonth = this.months[0];
+    this.categoryArray = this.separateCategories(this.transactionData);
+    this.buildChartData(this.categoryArray);
+    this.dataLoaded = true;
+  }
+
+  onMonthSelected(month: string) {
+    this.currentMonth = month;
+    if (this.transactionData) {
+      const filteredTransactions = this.transactionData.filter((txn) => {
+        const txnMonth = format(new Date(txn.transacted_at * 1000), 'MMM');
+        return txnMonth === month;
+      });
+
+      const categories = this.separateCategories(filteredTransactions);
+      this.categoryArray = categories;
+      this.buildChartData(categories); // Update pie chart data
+      this.cdr.detectChanges();
+    }
   }
 }

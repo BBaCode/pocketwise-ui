@@ -1,4 +1,14 @@
 <div *ngIf="dataLoaded">
+  <div class="flex-center"><h2>Spending By Month</h2></div>
+  <app-monthly-chart
+    [months]="months"
+    [totals]="totals"
+    (barClicked)="onMonthSelected($event)"
+  ></app-monthly-chart>
+  <p-divider></p-divider>
+  <div class="flex-center">
+    <h3>{{ currentMonth }}</h3>
+  </div>
   <div class="pie-container">
     <p-card
       ><p-chart type="pie" [data]="chartData" [options]="options"
