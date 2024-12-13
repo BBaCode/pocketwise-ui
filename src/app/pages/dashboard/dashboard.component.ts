@@ -9,6 +9,9 @@ import { Router } from '@angular/router';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { PanelModule } from 'primeng/panel';
 import { FormatDollarPipe } from '../../core/pipes/format-dollar.pipe';
+import { AuthService } from '../../core/services/auth/auth.service';
+import { ButtonModule } from 'primeng/button';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,6 +23,8 @@ import { FormatDollarPipe } from '../../core/pipes/format-dollar.pipe';
     ProgressSpinnerModule,
     PanelModule,
     FormatDollarPipe,
+    ButtonModule,
+    TooltipModule,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -30,6 +35,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   accountsLoaded: boolean = false;
   netWorth: number = 0;
   serverError: string = '';
+  userName: string = '';
 
   //mocked for testing to not use my real accounts
   mockBalance: string = '100000.00';
@@ -45,17 +51,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.sortAccountByType();
       this.netWorth = 0;
       this.generateNetWorth();
+      this.userName = localStorage.getItem('userName') || '';
       this.accountsLoaded = true;
       console.log('db constructed, account list:', this.accountList);
-      // if (!this.accountList) {
-      //   setTimeout(() => {
-      //     this.serverError = 'Server is down, please try again later.';
-      //     console.log(
-      //       'server error after trying to get data',
-      //       this.serverError
-      //     );
-      //   }, 10000);
-      // }
     });
   }
 
@@ -84,6 +82,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   convertToNumber(s: string) {
     return parseFloat(s);
+  }
+
+  async refreshData() {
+    this.accountsLoaded = false;
+    await this.dataStoreService.loadUpdatedAccounts();
   }
 
   private generateNetWorth() {

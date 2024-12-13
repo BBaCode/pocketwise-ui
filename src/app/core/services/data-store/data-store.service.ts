@@ -157,20 +157,23 @@ export class DataStoreService {
   }
 
   // Not currently using but may be changed in the future to be useful
-  loadNewAccounts(): void {
-    this.auth.getAuthToken().then((token) => {
+  async loadUpdatedAccounts() {
+    await this.auth.getAuthToken().then((token) => {
       if (token) {
         console.log('Loading new accounts from SimpleFIN into database');
         this.http
-          .get(`${this.apiUrl}/new-accounts`, {
+          .get(`${this.apiUrl}/account-data`, {
             headers: { Authorization: `Bearer ${token}` },
           })
-          .subscribe(
+          .toPromise()
+          .then(
             () => {
               console.log('Successfully loaded new accounts');
+              this.updateConsumers();
             },
             (error) => {
               console.error('Failed to load accounts', error);
+              this.updateConsumers();
             }
           );
       } else {

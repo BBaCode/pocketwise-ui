@@ -137,6 +137,7 @@ export class AuthService {
           user: null,
           error: null,
         };
+        localStorage.removeItem('userName');
         this.broadcastData();
       }
     } catch (error: any) {
@@ -219,6 +220,7 @@ export class AuthService {
           },
           error: null,
         };
+        localStorage.setItem('userName', data.data.first_name);
         this.broadcastData();
       })
       .catch((error) => {

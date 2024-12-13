@@ -1,5 +1,17 @@
 <div *ngIf="accountsLoaded">
   <!-- this works but hiding for testing -->
+  <div class="dashboard-header-container">
+    <p-card
+      ><div class="dashboard-header">
+        <div>{{ userName }}'s Dashboard</div>
+        <p-button
+          (click)="refreshData()"
+          icon="fa-solid fa-refresh"
+          [rounded]="true"
+          pTooltip="Refresh Data"
+        ></p-button></div
+    ></p-card>
+  </div>
   <div class="netWorth">
     <p-panel class="netWorth" header="Net Worth">
       <p [ngClass]="netWorth > 0 ? 'green' : 'red'">
