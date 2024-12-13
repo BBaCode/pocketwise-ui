@@ -5,8 +5,7 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { UserService } from '../../core/services/user/user.service';
+import { RouterLink } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -14,7 +13,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
-import { AuthService } from '../../core/services/auth-service/auth.service';
+import { AuthService } from '../../core/services/auth/auth.service';
 import { Subscription } from 'rxjs';
 
 @Component({

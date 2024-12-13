@@ -1,10 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Account, Transaction } from '../../models/account.model';
+import {
+  Account,
+  DataStore,
+  Transaction,
+  TransactionToUpdate,
+} from '../../models/account.model';
 import { MOCK_TRANSACTIONS } from '../../mock/mock-transactions';
 import { MOCK_ACCOUNTS } from '../../mock/mock-accounts';
-import { AuthService } from '../auth-service/auth.service';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +17,7 @@ import { AuthService } from '../auth-service/auth.service';
 export class DataStoreService {
   private useMockData = false; // Toggle this to use mock data
   // behavior subject to be subscribed to by everyone
-  dataStore: BehaviorSubject<any>;
+  dataStore: BehaviorSubject<DataStore>;
   private apiUrl = 'http://localhost:80';
   private store: {
     accounts: Array<Account> | null;
@@ -60,7 +65,6 @@ export class DataStoreService {
     }
   }
 
-  // only mocked at this point, need to add to backend
   async getAllTransactions(): Promise<void> {
     if (this.useMockData) {
       this.store.transactions = MOCK_TRANSACTIONS;
@@ -88,6 +92,34 @@ export class DataStoreService {
     }
   }
 
+  async updateTransactions(updatedTxns: TransactionToUpdate[]): Promise<void> {
+    const token = await this.auth.getAuthToken();
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    };
+
+    this.http
+      .put(
+        `${this.apiUrl}/update-transactions`,
+        { updatedTxns },
+        {
+          headers: headers,
+        }
+      )
+      .subscribe(
+        (data: any) => {
+          this.store.transactions = data;
+          this.updateConsumers();
+          console.log(data);
+        },
+        (error) => {
+          console.error('Failed to load transactions', error);
+        }
+      );
+  }
+
+  // NOT USING RIGHT NOW
   async getTransactionsForAccount(accountId: string): Promise<void> {
     if (this.useMockData) {
       console.log(`Using mock transactions for account ${accountId}`);
@@ -124,6 +156,7 @@ export class DataStoreService {
     }
   }
 
+  // Not currently using but may be changed in the future to be useful
   loadNewAccounts(): void {
     this.auth.getAuthToken().then((token) => {
       if (token) {
@@ -144,12 +177,6 @@ export class DataStoreService {
         console.error('No auth token found. Cannot load new accounts.');
       }
     });
-  }
-
-  clearTransactions(): void {
-    this.store.transactions = null;
-    this.updateConsumers();
-    console.log('cleared transactions', this.dataStore);
   }
 
   // when next is called, all subscribers get the new data

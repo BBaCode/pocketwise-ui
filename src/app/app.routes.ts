@@ -3,9 +3,10 @@ import { LoginComponent } from './pages/login/login.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { SignupComponent } from './pages/signup/signup.component';
 import { AccountComponent } from './pages/account/account.component';
-import { TransactionsComponent } from './pages/transactions/transactions.component';
+import { SpendingComponent } from './pages/spending/spending.component';
 import { AuthGuard } from '../app/core/services/auth-guard/auth-guard.guard'; // Import the AuthGuard
 import { LandingPageComponent } from './pages/landing-page/landing-page.component';
+import { TransactionComponent } from './pages/transaction/transaction.component';
 
 export const routes: Routes = [
   { path: 'signup', component: SignupComponent },
@@ -20,13 +21,18 @@ export const routes: Routes = [
     canActivate: [AuthGuard], // Protect this route
   },
   {
-    path: 'transactions',
-    component: TransactionsComponent,
+    path: 'spending',
+    component: SpendingComponent,
     canActivate: [AuthGuard], // Protect this route
   },
   {
     path: 'account/:id',
     component: AccountComponent,
+    canActivate: [AuthGuard], // Protect this route
+  },
+  {
+    path: 'transaction/:id',
+    component: TransactionComponent,
     canActivate: [AuthGuard], // Protect this route
   },
   {

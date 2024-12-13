@@ -1,0 +1,60 @@
+<div *ngIf="dataLoaded">
+  <div class="flex-center"><h2>Spending By Month</h2></div>
+  <app-monthly-chart
+    [months]="months"
+    [totals]="totals"
+    (barClicked)="onMonthSelected($event)"
+  ></app-monthly-chart>
+  <p-divider></p-divider>
+  <div class="flex-center">
+    <h3>{{ currentMonth }}</h3>
+  </div>
+  <div class="pie-container">
+    <p-card
+      ><p-chart type="pie" [data]="chartData" [options]="options"
+    /></p-card>
+  </div>
+  <div
+    class="transactions-categories"
+    *ngIf="nonCategorizedTransactions && nonCategorizedTransactions.length > 0"
+  >
+    <p-card>
+      <div class="uncategorized-transactions">
+        <div>
+          You have
+          <span>{{ nonCategorizedTransactions.length }}</span> uncategorized
+          transactions.
+        </div>
+        <p-button (onClick)="toggleDialog()"> Click to categorize</p-button>
+      </div>
+    </p-card>
+  </div>
+  <app-update-transaction
+    [uncategorizedTransactions]="nonCategorizedTransactions"
+    [isVisible]="isDialogOpen"
+    (close)="handleDialogClose()"
+  ></app-update-transaction>
+  <div class="transactions-categories">
+    <p-card>
+      <div *ngFor="let category of categoryArray">
+        <div class="category-information">
+          <div class="category-label">
+            <div
+              [style.backgroundColor]="setCategoryColor(category)"
+              class="key-color"
+            ></div>
+            <div>
+              {{ category.name }}
+            </div>
+          </div>
+          <div>{{ category.value | formatDollar }}</div>
+        </div>
+        <p-divider></p-divider>
+      </div>
+    </p-card>
+  </div>
+</div>
+
+<div *ngIf="!dataLoaded" class="spinner-container">
+  <p-progressSpinner ariaLabel="loading" />
+</div>

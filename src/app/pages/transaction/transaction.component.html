@@ -1,0 +1,58 @@
+<div *ngIf="transaction" class="transaction-container flex-100">
+  <div class="transaction-header flex-100">
+    <div>
+      <p-button
+        (click)="editCategory()"
+        size="small"
+        icon="fa-solid fa-pen-to-square"
+      ></p-button>
+    </div>
+  </div>
+  <div class="transaction-avatar flex-100">
+    <p-avatar
+      size="xlarge"
+      shape="circle"
+      [icon]="assignIcon(transaction.category)"
+      [style]="assignIconColor(transaction.category)"
+    ></p-avatar>
+  </div>
+  <div class="transaction-body flex-100">
+    <p-card>
+      <div class="transaction-card-header">
+        <div>{{ transaction.payee }}</div>
+        <div>{{ transaction.transacted_at | formatDate }}</div>
+      </div>
+      <p-divider></p-divider>
+      <div class="transaction-card-body">
+        <div class="category">
+          <div>Category:</div>
+          <div *ngIf="!editClicked">{{ transaction.category }}</div>
+          <div *ngIf="editClicked">
+            <p-dropdown
+              [options]="categories"
+              optionLabel="name"
+              placeholder="Select a Category"
+              (onChange)="updateTransaction($event)"
+            ></p-dropdown>
+          </div>
+        </div>
+        <div class="memo">
+          <div>Memo:</div>
+          <div>{{ transaction.memo }}</div>
+        </div>
+        <p-divider></p-divider>
+        <div class="amount flex-100">
+          <h4>Amount:</h4>
+          <h3>{{ transaction.amount | formatDollar }}</h3>
+        </div>
+        <p-divider></p-divider>
+        <div class="return">
+          <p-button (click)="returnToDashboard()">Return to Account</p-button>
+        </div>
+      </div>
+    </p-card>
+  </div>
+</div>
+<div *ngIf="!transaction" class="spinner-container">
+  <p-progressSpinner ariaLabel="loading" />
+</div>

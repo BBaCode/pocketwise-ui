@@ -10,6 +10,11 @@ export interface Transaction {
   category: string;
 }
 
+export interface TransactionToUpdate {
+  id: string;
+  category: string;
+}
+
 export interface Account {
   id: string;
   name: string;
@@ -26,6 +31,6 @@ interface Org {
 }
 
 export interface DataStore {
-  accounts: Array<Account>;
-  transactions: Array<Transaction>;
+  accounts: Array<Account> | null;
+  transactions: Array<Transaction> | null;
 }

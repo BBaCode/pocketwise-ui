@@ -1,0 +1,27 @@
+<p-dialog
+  header="Update Transaction Category"
+  [modal]="true"
+  [(visible)]="isVisible"
+  [style]="{ width: '25rem' }"
+>
+  <form [formGroup]="updateTxnsForm" (ngSubmit)="onSubmit()">
+    <div *ngFor="let txn of uncategorizedTransactions">
+      <p-card>
+        <div><strong>Description:</strong> {{ txn.description }}</div>
+        <div><strong>Amount:</strong> {{ txn.amount | formatDollar }}</div>
+        <p-dropdown
+          [options]="categories"
+          optionLabel="name"
+          placeholder="Select a Category"
+          formControlName="{{ txn.id }}"
+        ></p-dropdown>
+      </p-card>
+    </div>
+    <p-button
+      type="submit"
+      pRipple
+      label="Submit"
+      [disabled]="!updateTxnsForm.valid"
+    ></p-button>
+  </form>
+</p-dialog>
