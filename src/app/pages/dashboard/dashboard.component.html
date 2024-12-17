@@ -1,10 +1,21 @@
 <div *ngIf="accountsLoaded">
   <!-- this works but hiding for testing -->
+  <div class="dashboard-header-container">
+    <div class="dashboard-header">
+      <div>{{ userName }}'s Dashboard</div>
+      <p-button
+        (click)="refreshData()"
+        icon="fa-solid fa-refresh"
+        [rounded]="true"
+        pTooltip="Refresh Data"
+      ></p-button>
+    </div>
+  </div>
   <div class="netWorth">
     <p-panel class="netWorth" header="Net Worth">
       <p [ngClass]="netWorth > 0 ? 'green' : 'red'">
-        {{ netWorth | formatDollar }}
-        <!-- {{ formatDollarValue(100.0) }} -->
+        <!-- {{ netWorth | formatDollar }} -->
+        {{ 100000 | formatDollar }}
       </p>
     </p-panel>
   </div>
@@ -14,8 +25,8 @@
         <p class="account-title">{{ account.name }}</p>
         <div class="account-information">
           <p [ngClass]="convertToNumber(account.balance) > 0 ? 'green' : 'red'">
-            {{ account.balance | formatDollar }}
-            <!-- {{ formatDollarValue(100.0) }} -->
+            <!-- {{ account.balance | formatDollar }} -->
+            {{ 33333 | formatDollar }}
           </p>
           <p-tag
             [severity]="decideTagColor(account['type'])"

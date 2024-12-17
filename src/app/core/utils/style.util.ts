@@ -21,8 +21,11 @@ export const CATEGORY_ICONS: any = {
   'Gifts & Donations': 'gift',
   Insurance: 'shield',
   'Personal Care': 'shower',
-  Other: 'question',
+  Other: 'o',
   Income: 'money-bill',
+  'Credit Card Payment': 'credit-card',
+  Transfer: 'right-left',
+  Unknown: 'question',
 };
 
 export const COLOR_CATEGORIES: any = {
@@ -42,4 +45,6 @@ export const COLOR_CATEGORIES: any = {
   'Personal Care': '#B685A2', // Muted Pink
   Other: '#6E635D', // Warm Gray
   Income: '#138A36', //Forest Green
+  'Credit Card Payment': '#a5857e',
+  Transfer: '#848e5b',
 };

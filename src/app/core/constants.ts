@@ -15,4 +15,6 @@ export const CATEGORIES: any = [
   { name: 'Personal Care' },
   { name: 'Other' },
   { name: 'Income' },
+  { name: 'Credit Card Payment' },
+  { name: 'Transfer' },
 ];

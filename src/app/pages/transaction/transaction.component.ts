@@ -14,6 +14,7 @@ import { CATEGORIES } from '../../core/constants';
 import { DropdownModule } from 'primeng/dropdown';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { assignIcon, assignIconColor } from '../../core/utils/style.util';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-transaction',
@@ -28,6 +29,7 @@ import { assignIcon, assignIconColor } from '../../core/utils/style.util';
     DividerModule,
     DropdownModule,
     ProgressSpinnerModule,
+    TooltipModule,
   ],
   templateUrl: './transaction.component.html',
   styleUrl: './transaction.component.scss',

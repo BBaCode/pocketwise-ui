@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MenubarModule } from 'primeng/menubar';
 import { MenuItem } from 'primeng/api';
 import { CommonModule } from '@angular/common';
@@ -12,14 +12,21 @@ import { Subscription } from 'rxjs';
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.scss',
 })
-export class NavComponent implements OnInit {
+export class NavComponent implements OnInit, OnDestroy {
   items: MenuItem[] | undefined;
   loggedIn: boolean = false;
   auth$: Subscription;
+  user: string | null = null;
 
   constructor(private auth: AuthService) {
-    this.auth$ = auth.userAuth.subscribe((data) => {
-      if (data.user) this.loggedIn = true;
+    this.auth$ = auth.userAuth.subscribe(() => {
+      if (
+        typeof window !== 'undefined' &&
+        typeof localStorage !== 'undefined'
+      ) {
+        this.user = localStorage.getItem('userName');
+      }
+      if (this.user) this.loggedIn = true;
       else this.loggedIn = false;
       this.items = [
         {
@@ -60,6 +67,11 @@ export class NavComponent implements OnInit {
       ];
     });
   }
-
   ngOnInit(): void {}
+
+  ngOnDestroy(): void {
+    if (this.auth$) {
+      this.auth$.unsubscribe();
+    }
+  }
 }

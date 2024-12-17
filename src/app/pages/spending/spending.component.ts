@@ -71,7 +71,6 @@ export class SpendingComponent implements OnInit {
   }
 
   async ngOnInit() {
-    console.log('BBB init component');
     // may not need because its called in the dashboard
     if (!this.dataStore.dataStore.value.transactions)
       this.dataStore.getAllTransactions();
@@ -81,7 +80,7 @@ export class SpendingComponent implements OnInit {
         this.transactionData = data.transactions;
         if (this.transactionData) {
           this.nonCategorizedTransactions = this.transactionData?.filter(
-            (txn) => txn.category === 'Other'
+            (txn) => txn.category === 'Unknown'
           );
           this.getMonthlySpend(this.transactionData);
         }
@@ -112,7 +111,7 @@ export class SpendingComponent implements OnInit {
       Insurance: 0,
       'Personal Care': 0,
       Other: 0,
-      Income: 0,
+      Unknown: 0,
     };
 
     // Accumulate transaction amounts into categories
@@ -169,19 +168,24 @@ export class SpendingComponent implements OnInit {
 
     // Iterate over transactions
     for (const transaction of transactions) {
-      // Convert the UNIX timestamp to a month code (e.g., 'Jan')
-      const monthCode = format(
-        new Date(transaction.transacted_at * 1000),
-        'MMM'
-      );
+      if (
+        transaction.category !== 'Credit Card Payment' &&
+        transaction.category !== 'Income'
+      ) {
+        // Convert the UNIX timestamp to a month code (e.g., 'Jan')
+        const monthCode = format(
+          new Date(transaction.transacted_at * 1000),
+          'MMM'
+        );
 
-      // Add the transaction amount to the corresponding month
-      const amount = parseFloat(transaction.amount); // Convert string amount to number
-      monthlyTotals.set(
-        monthCode,
-        (monthlyTotals.get(monthCode) || 0) + amount
-      );
-      console.log('BBB monthly spend gotten', monthlyTotals);
+        // Add the transaction amount to the corresponding month
+        const amount = Math.abs(parseFloat(transaction.amount)); // Convert string amount to number
+        monthlyTotals.set(
+          monthCode,
+          (monthlyTotals.get(monthCode) || 0) + amount
+        );
+        console.log('BBB monthly spend gotten', monthlyTotals);
+      }
     }
 
     // Convert the Map to two arrays
