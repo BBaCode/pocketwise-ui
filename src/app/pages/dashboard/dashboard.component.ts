@@ -96,6 +96,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
+  // will need to update for Carolines accounts I imagine
   private sortAccountByType() {
     this.accountList?.forEach((acc) => {
       if (
