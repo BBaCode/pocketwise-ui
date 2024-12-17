@@ -1,5 +1,5 @@
 import { NgIf } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   ReactiveFormsModule,
   FormControl,
@@ -14,6 +14,7 @@ import { DividerModule } from 'primeng/divider';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { AuthService } from '../../core/services/auth/auth.service';
+import { UserStoreData } from '../../core/models/user.model';
 
 @Component({
   selector: 'app-login',
@@ -32,10 +33,10 @@ import { AuthService } from '../../core/services/auth/auth.service';
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   constructor(private router: Router, private auth: AuthService) {}
 
-  errorMessage: string = '';
+  errorMessage: string | null = '';
 
   loginForm = new FormGroup({
     email: new FormControl<string>('', [Validators.required, Validators.email]),
@@ -44,6 +45,12 @@ export class LoginComponent {
       Validators.minLength(8),
     ]),
   });
+
+  ngOnInit() {
+    this.auth.userAuth.subscribe((data: UserStoreData) => {
+      this.errorMessage = data.error;
+    });
+  }
 
   onSubmit() {
     if (

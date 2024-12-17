@@ -15,11 +15,12 @@ import { Subscription } from 'rxjs';
 export class NavComponent implements OnInit, OnDestroy {
   items: MenuItem[] | undefined;
   loggedIn: boolean = false;
-  auth$: Subscription;
+  auth$?: Subscription;
   user: string | null = null;
 
-  constructor(private auth: AuthService) {
-    this.auth$ = auth.userAuth.subscribe(() => {
+  constructor(private auth: AuthService) {}
+  ngOnInit(): void {
+    this.auth$ = this.auth.userAuth.subscribe(() => {
       if (
         typeof window !== 'undefined' &&
         typeof localStorage !== 'undefined'
@@ -67,7 +68,6 @@ export class NavComponent implements OnInit, OnDestroy {
       ];
     });
   }
-  ngOnInit(): void {}
 
   ngOnDestroy(): void {
     if (this.auth$) {

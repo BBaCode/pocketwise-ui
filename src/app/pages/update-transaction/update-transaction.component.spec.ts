@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UpdateTransactionComponent } from './update-transaction.component';
+import { HttpClient, HttpHandler } from '@angular/common/http';
 
 describe('UpdateTransactionComponent', () => {
   let component: UpdateTransactionComponent;
@@ -8,9 +9,9 @@ describe('UpdateTransactionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UpdateTransactionComponent]
-    })
-    .compileComponents();
+      imports: [UpdateTransactionComponent],
+      providers: [HttpClient, HttpHandler],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(UpdateTransactionComponent);
     component = fixture.componentInstance;

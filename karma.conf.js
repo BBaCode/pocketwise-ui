@@ -1,0 +1,32 @@
+module.exports = function (config) {
+  config.set({
+    basePath: "",
+    frameworks: ["jasmine", "@angular-devkit/build-angular"],
+    plugins: [
+      require("karma-jasmine"),
+      require("karma-chrome-launcher"),
+      require("karma-coverage"),
+      require("@angular-devkit/build-angular/plugins/karma"),
+    ],
+    client: {
+      jasmine: {},
+      clearContext: false, // leave Jasmine Spec Runner output visible in browser
+    },
+    coverageReporter: {
+      dir: require("path").join(__dirname, "./coverage"),
+      subdir: ".",
+      reporters: [
+        { type: "html" }, // Generates index.html for code coverage
+        { type: "text-summary" }, // Outputs summary to terminal
+      ],
+    },
+    reporters: ["progress", "coverage"],
+    port: 9876,
+    colors: true,
+    logLevel: config.LOG_INFO,
+    autoWatch: true,
+    browsers: ["Chrome"],
+    singleRun: false,
+    restartOnFileChange: true,
+  });
+};

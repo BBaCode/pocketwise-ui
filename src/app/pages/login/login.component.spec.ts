@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LoginComponent } from './login.component';
-import { HttpService } from '../core/services/http/http.service';
+import { ActivatedRoute } from '@angular/router';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -10,6 +10,7 @@ describe('LoginComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [LoginComponent],
+      providers: [{ provide: ActivatedRoute, useValue: { snapshot: {} } }], // Mock ActivatedRoute]
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoginComponent);

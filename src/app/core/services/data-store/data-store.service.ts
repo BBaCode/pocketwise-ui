@@ -7,17 +7,18 @@ import {
   Transaction,
   TransactionToUpdate,
 } from '../../models/account.model';
-import { MOCK_TRANSACTIONS } from '../../mock/mock-transactions';
-import { MOCK_ACCOUNTS } from '../../mock/mock-accounts';
+import { MOCK_TRANSACTIONS } from '../../mock/transactions.mock';
+import { MOCK_ACCOUNTS } from '../../mock/accounts.mock';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DataStoreService {
-  private useMockData = false; // Toggle this to use mock data
   // behavior subject to be subscribed to by everyone
   dataStore: BehaviorSubject<DataStore>;
+
+  private useMockData = false; // Toggle this to use mock data
   private apiUrl = 'http://localhost:80';
   private store: {
     accounts: Array<Account> | null;

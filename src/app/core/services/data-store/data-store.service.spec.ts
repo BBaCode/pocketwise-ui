@@ -1,12 +1,19 @@
 import { TestBed } from '@angular/core/testing';
 
 import { DataStoreService } from './data-store.service';
+import {
+  HttpClient,
+  HttpHandler,
+  provideHttpClient,
+} from '@angular/common/http';
 
-describe('SimplefinService', () => {
+describe('DataStoreService', () => {
   let service: DataStoreService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient()],
+    });
     service = TestBed.inject(DataStoreService);
   });
 
