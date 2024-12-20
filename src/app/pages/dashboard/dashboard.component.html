@@ -14,8 +14,8 @@
   <div class="netWorth">
     <p-panel class="netWorth" header="Net Worth">
       <p [ngClass]="netWorth > 0 ? 'green' : 'red'">
-        <!-- {{ netWorth | formatDollar }} -->
-        {{ 100000 | formatDollar }}
+        {{ netWorth | formatDollar }}
+        <!-- {{ 100000 | formatDollar }} -->
       </p>
     </p-panel>
   </div>
@@ -25,8 +25,8 @@
         <p class="account-title">{{ account.name }}</p>
         <div class="account-information">
           <p [ngClass]="convertToNumber(account.balance) > 0 ? 'green' : 'red'">
-            <!-- {{ account.balance | formatDollar }} -->
-            {{ 33333 | formatDollar }}
+            {{ account.balance | formatDollar }}
+            <!-- {{ 33333 | formatDollar }} -->
           </p>
           <p-tag
             [severity]="decideTagColor(account['type'])"

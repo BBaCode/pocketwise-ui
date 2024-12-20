@@ -7,7 +7,6 @@ import {
   Transaction,
 } from '../../core/models/account.model';
 import { TableModule } from 'primeng/table';
-import { EtDatePipe } from '../../core/pipes/et-date.pipe';
 import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
 import { AvatarModule } from 'primeng/avatar';
@@ -15,13 +14,14 @@ import { FormatDollarPipe } from '../../core/pipes/format-dollar.pipe';
 import { Subscription } from 'rxjs';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { assignIcon, assignIconColor } from '../../core/utils/style.util';
+import { FormatDatePipe } from '../../core/pipes/format-date.pipe';
 
 @Component({
   selector: 'app-account',
   standalone: true,
   imports: [
     TableModule,
-    EtDatePipe,
+    FormatDatePipe,
     CardModule,
     CommonModule,
     AvatarModule,

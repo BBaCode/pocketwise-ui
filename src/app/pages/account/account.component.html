@@ -3,8 +3,8 @@
     <p-card>
       <div class="account-information">
         <div class="account-name">{{ account.name }}</div>
-        <!-- <div class="account-value">{{ account.balance | formatDollar }}</div> -->
-        <div class="account-value">{{ 33333 | formatDollar }}</div>
+        <div class="account-value">{{ account.balance | formatDollar }}</div>
+        <!-- <div class="account-value">{{ 33333 | formatDollar }}</div> -->
       </div>
     </p-card>
   </div>
@@ -26,7 +26,7 @@
         />
         <div>
           <strong>{{ transaction.payee }}</strong>
-          <p>{{ transaction["transacted_at"] | etDate }}</p>
+          <p>{{ transaction["transacted_at"] | formatDate }}</p>
         </div>
       </div>
       <span>{{ transaction.amount | formatDollar }}</span>
