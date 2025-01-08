@@ -32,6 +32,14 @@ import { TooltipModule } from 'primeng/tooltip';
 export class DashboardComponent implements OnInit, OnDestroy {
   accounts$: Subscription;
   accountList: Account[] | null = null;
+  groupedAccounts: { type: string; total: number }[] = [];
+  typeList: string[] = [
+    'Credit Card',
+    'Bank',
+    'HSA',
+    'Investment',
+    'Retirement',
+  ];
   accountsLoaded: boolean = false;
   netWorth: number = 0;
   serverError: string = '';
@@ -70,14 +78,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     console.log('db destroyed');
   }
 
-  decideTagColor(accountType: string | undefined) {
-    if (accountType === 'Credit Card') {
-      return 'info';
-    } else return 'success';
-  }
-
   navigateToAccount(id: string) {
-    this.router.navigate(['/account', id]);
+    this.router.navigate(['/accounts', id.toLowerCase()]);
   }
 
   convertToNumber(s: string) {
@@ -96,17 +98,57 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  // will need to update for Carolines accounts I imagine
+  // will need to update for Carolines account I imagine
+  // TODO: move this to backend
   private sortAccountByType() {
     this.accountList?.forEach((acc) => {
       if (
         acc.org.name.includes('Chase') ||
         acc.org.name.includes('American Express')
       ) {
-        acc['type'] = 'Credit Card';
+        acc['type'] = 'Credit Cards';
       } else if (acc.org.name.includes('Bank')) {
-        acc['type'] = 'Bank';
-      }
+        acc['type'] = 'Banks';
+      } else if (
+        acc.name.includes('Retirement') ||
+        acc.name.toLowerCase().includes('rhrp') ||
+        acc.name.toLowerCase().includes('ret')
+      ) {
+        acc['type'] = 'Retirement';
+      } else if (
+        acc.org.name.includes('Fidelity') ||
+        acc.name.toLowerCase().includes('fid') ||
+        acc.name.includes('Health') ||
+        acc.name.toLowerCase().includes('HSA')
+      ) {
+        acc['type'] = 'Investments';
+      } else acc['type'] = 'Other';
     });
+    this.accountList?.sort((a, b) => a.type.localeCompare(b.type));
+    console.log('accL', this.accountList);
+    this.groupedAccounts = this.groupAccountsByType(this.accountList);
+  }
+
+  groupAccountsByType(
+    accounts: Account[] | null
+  ): { type: string; total: number }[] {
+    if (accounts) {
+      const grouped = accounts.reduce((acc, account) => {
+        const type = account.type;
+        const balance = parseFloat(account.balance); // Convert balance to a number
+
+        if (!acc[type]) {
+          acc[type] = 0;
+        }
+
+        acc[type] += balance;
+        return acc;
+      }, {} as Record<string, number>);
+
+      return Object.keys(grouped).map((type) => ({
+        type,
+        total: grouped[type],
+      }));
+    } else return [{ type: 'No Accounts', total: 0 }];
   }
 }

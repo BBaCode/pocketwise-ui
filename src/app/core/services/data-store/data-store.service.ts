@@ -133,6 +133,7 @@ export class DataStoreService {
           .then(
             () => {
               console.log('Successfully loaded new accounts');
+              this.getAccounts();
               this.updateConsumers();
             },
             (error) => {

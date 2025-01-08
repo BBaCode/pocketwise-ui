@@ -50,13 +50,16 @@ export class AccountComponent implements OnInit, OnDestroy {
     console.log('ngoninit begins', this.transactionsLoaded);
     this.transactionsLoaded = false;
     this.accountId = this.route.snapshot.paramMap.get('id');
+    console.log(this.accountId);
     if (this.accountId) {
       this.transactions$ = this.dataStoreService.dataStore.subscribe(
         (data: DataStore) => {
+          console.log(data.accounts);
           this.account = data.accounts?.find(
             (acc) => acc.id === this.accountId
           );
           if (!this.transactions) this.refresh();
+          console.log(this.account);
           this.transactions =
             data.transactions
               ?.filter((txn) => txn.account_id === this.accountId)

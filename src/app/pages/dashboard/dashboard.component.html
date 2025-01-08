@@ -19,19 +19,33 @@
       </p>
     </p-panel>
   </div>
-  <div class="account-list">
+  <!-- <div class="account-list">
     <div class="account-card" *ngFor="let account of accountList">
       <p-card (click)="navigateToAccount(account.id)">
         <p class="account-title">{{ account.name }}</p>
         <div class="account-information">
           <p [ngClass]="convertToNumber(account.balance) > 0 ? 'green' : 'red'">
             {{ account.balance | formatDollar }}
-            <!-- {{ 33333 | formatDollar }} -->
+             {{ 33333 | formatDollar }}
           </p>
           <p-tag
             [severity]="decideTagColor(account['type'])"
             [value]="account['type']"
           />
+        </div>
+      </p-card>
+    </div>
+  </div> -->
+  <div class="account-list" *ngIf="groupedAccounts.length">
+    <div class="account-card" *ngFor="let group of groupedAccounts">
+      <p-card (click)="navigateToAccount(group.type)">
+        <!-- ^^ (click)="navigateToAccount(account.id)" -->
+        <p class="account-title">{{ group.type }}</p>
+        <div class="account-information">
+          <p [ngClass]="group.total > 0 ? 'green' : 'red'">
+            {{ group.total | formatDollar }}
+            <!-- {{ 33333 | formatDollar }} -->
+          </p>
         </div>
       </p-card>
     </div>

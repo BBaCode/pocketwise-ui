@@ -170,7 +170,8 @@ export class SpendingComponent implements OnInit {
     for (const transaction of transactions) {
       if (
         transaction.category !== 'Credit Card Payment' &&
-        transaction.category !== 'Income'
+        transaction.category !== 'Income' &&
+        transaction.category !== 'Transfer'
       ) {
         // Convert the UNIX timestamp to a month code (e.g., 'Jan')
         const monthCode = format(
@@ -184,7 +185,6 @@ export class SpendingComponent implements OnInit {
           monthCode,
           (monthlyTotals.get(monthCode) || 0) + amount
         );
-        console.log('BBB monthly spend gotten', monthlyTotals);
       }
     }
 

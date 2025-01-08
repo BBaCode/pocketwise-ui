@@ -23,7 +23,7 @@ export interface Account {
   'available-balance': string;
   org: Org;
   transactions: Transaction[];
-  type?: string;
+  type: string;
 }
 
 interface Org {
