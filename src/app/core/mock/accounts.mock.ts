@@ -9,7 +9,7 @@ export const MOCK_ACCOUNTS: Account[] = [
     'available-balance': '1500.00',
     org: { name: 'Bank of the World' },
     transactions: [], // Can fill in mock transactions
-    type: 'Checking',
+    account_type: 'Checking',
   },
   {
     id: '2',
@@ -19,7 +19,7 @@ export const MOCK_ACCOUNTS: Account[] = [
     'available-balance': '5000.00',
     org: { name: 'Global Savings Bank' },
     transactions: [], // Can fill in mock transactions
-    type: 'Savings',
+    account_type: 'Savings',
   },
   {
     id: '3',
@@ -29,6 +29,6 @@ export const MOCK_ACCOUNTS: Account[] = [
     'available-balance': '-1022.32',
     org: { name: 'JPMorgan Chase' },
     transactions: [], // Can fill in mock transactions
-    type: 'Credit Card',
+    account_type: 'Credit Card',
   },
 ];

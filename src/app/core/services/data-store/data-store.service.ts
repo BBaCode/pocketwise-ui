@@ -120,7 +120,6 @@ export class DataStoreService {
       );
   }
 
-  // Not currently using but may be changed in the future to be useful
   async loadUpdatedAccounts() {
     await this.auth.getAuthToken().then((token) => {
       if (token) {

@@ -33,13 +33,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   accounts$: Subscription;
   accountList: Account[] | null = null;
   groupedAccounts: { type: string; total: number }[] = [];
-  typeList: string[] = [
-    'Credit Card',
-    'Bank',
-    'HSA',
-    'Investment',
-    'Retirement',
-  ];
   accountsLoaded: boolean = false;
   netWorth: number = 0;
   serverError: string = '';
@@ -56,7 +49,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.accounts$ = dataStoreService.dataStore.subscribe((data) => {
       console.log('server error when trying to get data', this.serverError);
       this.accountList = data.accounts;
-      this.sortAccountByType();
+      this.groupedAccounts = this.groupAccountsByType(this.accountList);
       this.netWorth = 0;
       this.generateNetWorth();
       this.userName = localStorage.getItem('userName') || '';
@@ -98,43 +91,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  // will need to update for Carolines account I imagine
-  // TODO: move this to backend
-  private sortAccountByType() {
-    this.accountList?.forEach((acc) => {
-      if (
-        acc.org.name.includes('Chase') ||
-        acc.org.name.includes('American Express')
-      ) {
-        acc['type'] = 'Credit Cards';
-      } else if (acc.org.name.includes('Bank')) {
-        acc['type'] = 'Banks';
-      } else if (
-        acc.name.includes('Retirement') ||
-        acc.name.toLowerCase().includes('rhrp') ||
-        acc.name.toLowerCase().includes('ret')
-      ) {
-        acc['type'] = 'Retirement';
-      } else if (
-        acc.org.name.includes('Fidelity') ||
-        acc.name.toLowerCase().includes('fid') ||
-        acc.name.includes('Health') ||
-        acc.name.toLowerCase().includes('HSA')
-      ) {
-        acc['type'] = 'Investments';
-      } else acc['type'] = 'Other';
-    });
-    this.accountList?.sort((a, b) => a.type.localeCompare(b.type));
-    console.log('accL', this.accountList);
-    this.groupedAccounts = this.groupAccountsByType(this.accountList);
-  }
-
   groupAccountsByType(
     accounts: Account[] | null
   ): { type: string; total: number }[] {
     if (accounts) {
       const grouped = accounts.reduce((acc, account) => {
-        const type = account.type;
+        const type = account.account_type;
         const balance = parseFloat(account.balance); // Convert balance to a number
 
         if (!acc[type]) {

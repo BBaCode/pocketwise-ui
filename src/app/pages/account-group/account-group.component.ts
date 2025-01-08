@@ -52,29 +52,6 @@ export class AccountGroupComponent implements OnInit, OnDestroy {
     this.router.navigate([`accounts/${this.accountType}/account`, id]);
   }
 
-  decideTagColor(accountType: string | undefined) {
-    switch (accountType) {
-      case 'Credit Card': {
-        return 'info';
-      }
-      case 'HSA': {
-        return 'warning';
-      }
-      case 'Investment': {
-        return 'success';
-      }
-      case 'Bank': {
-        return 'danger';
-      }
-      case 'Retirement': {
-        return 'contrast';
-      }
-      default: {
-        return 'secondary';
-      }
-    }
-  }
-
   groupImage(accType: string | null): string {
     const normalizedType = accType?.trim().toLowerCase().replace(' ', '-');
 
@@ -88,7 +65,7 @@ export class AccountGroupComponent implements OnInit, OnDestroy {
 
   private filterAccountsByType() {
     this.filteredAccounts = this.accountList?.filter(
-      (acc) => acc.type.toLowerCase() === this.accountType
+      (acc) => acc.account_type.toLowerCase() === this.accountType
     );
   }
 }
