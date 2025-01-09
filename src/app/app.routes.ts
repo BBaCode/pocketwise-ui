@@ -7,6 +7,7 @@ import { SpendingComponent } from './pages/spending/spending.component';
 import { AuthGuard } from '../app/core/services/auth-guard/auth-guard.guard'; // Import the AuthGuard
 import { LandingPageComponent } from './pages/landing-page/landing-page.component';
 import { TransactionComponent } from './pages/transaction/transaction.component';
+import { AccountGroupComponent } from './pages/account-group/account-group.component';
 
 export const routes: Routes = [
   { path: 'signup', component: SignupComponent },
@@ -26,7 +27,12 @@ export const routes: Routes = [
     canActivate: [AuthGuard], // Protect this route
   },
   {
-    path: 'account/:id',
+    path: 'accounts/:id',
+    component: AccountGroupComponent,
+    canActivate: [AuthGuard], // Protect this route
+  },
+  {
+    path: 'accounts/:id/account/:id',
     component: AccountComponent,
     canActivate: [AuthGuard], // Protect this route
   },

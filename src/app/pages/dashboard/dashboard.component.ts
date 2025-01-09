@@ -9,9 +9,14 @@ import { Router } from '@angular/router';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { PanelModule } from 'primeng/panel';
 import { FormatDollarPipe } from '../../core/pipes/format-dollar.pipe';
-import { AuthService } from '../../core/services/auth/auth.service';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
+import { ACCOUNT_TYPES } from '../../core/constants';
+import {
+  assignAccountTypeIcon,
+  assignAccountTypeIconColor,
+} from '../../core/utils/style.util';
+import { AvatarModule } from 'primeng/avatar';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,6 +30,7 @@ import { TooltipModule } from 'primeng/tooltip';
     FormatDollarPipe,
     ButtonModule,
     TooltipModule,
+    AvatarModule,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -32,6 +38,7 @@ import { TooltipModule } from 'primeng/tooltip';
 export class DashboardComponent implements OnInit, OnDestroy {
   accounts$: Subscription;
   accountList: Account[] | null = null;
+  groupedAccounts: { type: string; total: number }[] = [];
   accountsLoaded: boolean = false;
   netWorth: number = 0;
   serverError: string = '';
@@ -41,6 +48,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   mockBalance: string = '100000.00';
   mockBalanceInt: number = parseFloat(this.mockBalance);
 
+  account_types = ACCOUNT_TYPES;
+  assignIcon = assignAccountTypeIcon;
+  assignIconColor = assignAccountTypeIconColor;
+
   constructor(
     private dataStoreService: DataStoreService,
     private router: Router
@@ -48,7 +59,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.accounts$ = dataStoreService.dataStore.subscribe((data) => {
       console.log('server error when trying to get data', this.serverError);
       this.accountList = data.accounts;
-      this.sortAccountByType();
+      this.groupedAccounts = this.groupAccountsByType(this.accountList);
       this.netWorth = 0;
       this.generateNetWorth();
       this.userName = localStorage.getItem('userName') || '';
@@ -70,14 +81,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     console.log('db destroyed');
   }
 
-  decideTagColor(accountType: string | undefined) {
-    if (accountType === 'Credit Card') {
-      return 'info';
-    } else return 'success';
-  }
-
-  navigateToAccount(id: string) {
-    this.router.navigate(['/account', id]);
+  navigateToAccountGroup(id: string) {
+    this.router.navigate(['/accounts', id.toLowerCase()]);
   }
 
   convertToNumber(s: string) {
@@ -96,16 +101,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  private sortAccountByType() {
-    this.accountList?.forEach((acc) => {
-      if (
-        acc.org.name.includes('Chase') ||
-        acc.org.name.includes('American Express')
-      ) {
-        acc['type'] = 'Credit Card';
-      } else if (acc.org.name.includes('Bank')) {
-        acc['type'] = 'Bank';
-      }
-    });
+  groupAccountsByType(
+    accounts: Account[] | null
+  ): { type: string; total: number }[] {
+    if (accounts) {
+      const grouped = accounts.reduce((acc, account) => {
+        const type = account.account_type;
+        const balance = parseFloat(account.balance); // Convert balance to a number
+
+        if (!acc[type]) {
+          acc[type] = 0;
+        }
+
+        acc[type] += balance;
+        return acc;
+      }, {} as Record<string, number>);
+
+      return Object.keys(grouped).map((type) => ({
+        type,
+        total: grouped[type],
+      }));
+    } else return [{ type: 'No Accounts', total: 0 }];
   }
 }

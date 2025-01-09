@@ -1,0 +1,22 @@
+<div
+  class="hero-container"
+  [style.backgroundImage]="'url(' + groupImage(accountType) + ')'"
+>
+  <h2 class="account-type-title">{{ accountType | titlecase }}</h2>
+</div>
+<div *ngIf="accountsLoaded" class="account-list">
+  <div class="account-card" *ngFor="let account of filteredAccounts">
+    <p-card (click)="navigateToAccount(account.id)">
+      <p class="account-title">{{ account.name }}</p>
+      <div class="account-information">
+        <p [ngClass]="convertToNumber(account.balance) > 0 ? 'green' : 'red'">
+          {{ account.balance | formatDollar }}
+          <!-- {{ 33333 | formatDollar }} -->
+        </p>
+      </div>
+    </p-card>
+  </div>
+</div>
+<div *ngIf="!accountsLoaded" class="spinner-container">
+  <p-progressSpinner ariaLabel="loading" />
+</div>

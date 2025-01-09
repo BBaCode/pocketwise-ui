@@ -3,35 +3,18 @@
     <p-card>
       <div class="account-information">
         <div class="account-name">{{ account.name }}</div>
-        <!-- <div class="account-value">{{ account.balance | formatDollar }}</div> -->
-        <div class="account-value">{{ 33333 | formatDollar }}</div>
+        <div class="account-value">{{ account.balance | formatDollar }}</div>
+        <!-- <div class="account-value">{{ 33333 | formatDollar }}</div> -->
       </div>
     </p-card>
   </div>
   <div class="transactions-header">
     <div>Recent Transactions</div>
   </div>
-  <div *ngFor="let transaction of transactions">
-    <div
-      class="transaction-card"
-      (click)="navigateToTransaction(transaction.id)"
-    >
-      <div class="transaction-left">
-        <p-avatar
-          class="transaction-avatar"
-          size="large"
-          [icon]="assignIcon(transaction.category)"
-          shape="circle"
-          [style]="assignIconColor(transaction.category)"
-        />
-        <div>
-          <strong>{{ transaction.payee }}</strong>
-          <p>{{ transaction["transacted_at"] | etDate }}</p>
-        </div>
-      </div>
-      <span>{{ transaction.amount | formatDollar }}</span>
-    </div>
-  </div>
+  <app-transaction-item
+    [transactions]="transactions"
+    [showIcon]="true"
+  ></app-transaction-item>
 </div>
 
 <div *ngIf="!transactionsLoaded || !account" class="spinner-container">

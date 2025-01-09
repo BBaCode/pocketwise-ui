@@ -7,17 +7,18 @@ import {
   Transaction,
   TransactionToUpdate,
 } from '../../models/account.model';
-import { MOCK_TRANSACTIONS } from '../../mock/mock-transactions';
-import { MOCK_ACCOUNTS } from '../../mock/mock-accounts';
+import { MOCK_TRANSACTIONS } from '../../mock/transactions.mock';
+import { MOCK_ACCOUNTS } from '../../mock/accounts.mock';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DataStoreService {
-  private useMockData = false; // Toggle this to use mock data
   // behavior subject to be subscribed to by everyone
   dataStore: BehaviorSubject<DataStore>;
+
+  private useMockData = false; // Toggle this to use mock data
   private apiUrl = 'http://localhost:80';
   private store: {
     accounts: Array<Account> | null;
@@ -119,44 +120,6 @@ export class DataStoreService {
       );
   }
 
-  // NOT USING RIGHT NOW
-  async getTransactionsForAccount(accountId: string): Promise<void> {
-    if (this.useMockData) {
-      console.log(`Using mock transactions for account ${accountId}`);
-      this.store.transactions = MOCK_TRANSACTIONS.filter(
-        (transaction: Transaction) => transaction.account_id === accountId
-      );
-      this.updateConsumers();
-    } else {
-      console.log(`Fetching transactions from API for account ${accountId}`);
-
-      const token = await this.auth.getAuthToken();
-      const headers = {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      };
-
-      this.http
-        .post(
-          `${this.apiUrl}/transactions`,
-          { account: accountId },
-          {
-            headers: headers,
-          }
-        )
-        .subscribe(
-          (data: any) => {
-            this.store.transactions = data;
-            this.updateConsumers();
-          },
-          (error) => {
-            console.error('Failed to load transactions', error);
-          }
-        );
-    }
-  }
-
-  // Not currently using but may be changed in the future to be useful
   async loadUpdatedAccounts() {
     await this.auth.getAuthToken().then((token) => {
       if (token) {
@@ -169,6 +132,7 @@ export class DataStoreService {
           .then(
             () => {
               console.log('Successfully loaded new accounts');
+              this.getAccounts();
               this.updateConsumers();
             },
             (error) => {

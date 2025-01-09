@@ -2,11 +2,7 @@ import { inject, Injectable, NgZone } from '@angular/core';
 import { createClient, SupabaseClient, User } from '@supabase/supabase-js';
 import { BehaviorSubject } from 'rxjs';
 import { LoggedInUser, UserStoreData } from '../../models/user.model';
-
-// move to .env file
-const supabaseUrl = 'https://sbvghbgzfitnurkzuzsb.supabase.co';
-const supabaseKey =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNidmdoYmd6Zml0bnVya3p1enNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI2MzQyMTQsImV4cCI6MjA0ODIxMDIxNH0.qOSO8HZurjCQNN5I12sYCKei1BX6ytJ3zS4QzDCCzuw';
+import { getSupabaseClient } from './supabase-client';
 
 @Injectable({
   providedIn: 'root',
@@ -30,9 +26,7 @@ export class AuthService {
   constructor() {
     // this code allows the client to exist permanently even though angular wants all
     // elements to "finish" initializing before it renders
-    this.supabase = this.ngZone.runOutsideAngular(() =>
-      createClient(supabaseUrl, supabaseKey)
-    );
+    this.supabase = this.ngZone.runOutsideAngular(() => getSupabaseClient());
 
     this.authStore = {
       user: null,

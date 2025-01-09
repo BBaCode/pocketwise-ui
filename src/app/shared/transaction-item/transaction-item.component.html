@@ -1,0 +1,19 @@
+<div *ngFor="let transaction of transactions">
+  <div class="transaction-card" (click)="navigateToTransaction(transaction.id)">
+    <div class="transaction-left">
+      <p-avatar
+        *ngIf="showIcon"
+        class="transaction-avatar"
+        size="large"
+        [icon]="assignIcon(transaction.category)"
+        shape="circle"
+        [style]="assignIconColor(transaction.category)"
+      />
+      <div>
+        <strong>{{ transaction.payee }}</strong>
+        <p>{{ transaction["transacted_at"] | formatDate }}</p>
+      </div>
+    </div>
+    <span>{{ transaction.amount | formatDollar }}</span>
+  </div>
+</div>

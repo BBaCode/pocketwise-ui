@@ -7,7 +7,6 @@ import {
   Transaction,
 } from '../../core/models/account.model';
 import { TableModule } from 'primeng/table';
-import { EtDatePipe } from '../../core/pipes/et-date.pipe';
 import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
 import { AvatarModule } from 'primeng/avatar';
@@ -15,18 +14,21 @@ import { FormatDollarPipe } from '../../core/pipes/format-dollar.pipe';
 import { Subscription } from 'rxjs';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { assignIcon, assignIconColor } from '../../core/utils/style.util';
+import { FormatDatePipe } from '../../core/pipes/format-date.pipe';
+import { TransactionItemComponent } from '../../shared/transaction-item/transaction-item.component';
 
 @Component({
   selector: 'app-account',
   standalone: true,
   imports: [
     TableModule,
-    EtDatePipe,
+    FormatDatePipe,
     CardModule,
     CommonModule,
     AvatarModule,
     FormatDollarPipe,
     ProgressSpinnerModule,
+    TransactionItemComponent,
   ],
   templateUrl: './account.component.html',
   styleUrl: './account.component.scss',
@@ -50,13 +52,16 @@ export class AccountComponent implements OnInit, OnDestroy {
     console.log('ngoninit begins', this.transactionsLoaded);
     this.transactionsLoaded = false;
     this.accountId = this.route.snapshot.paramMap.get('id');
+    console.log(this.accountId);
     if (this.accountId) {
       this.transactions$ = this.dataStoreService.dataStore.subscribe(
         (data: DataStore) => {
+          console.log(data.accounts);
           this.account = data.accounts?.find(
             (acc) => acc.id === this.accountId
           );
           if (!this.transactions) this.refresh();
+          console.log(this.account);
           this.transactions =
             data.transactions
               ?.filter((txn) => txn.account_id === this.accountId)

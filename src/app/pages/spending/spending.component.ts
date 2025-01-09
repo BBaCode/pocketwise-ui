@@ -12,6 +12,7 @@ import { ButtonModule } from 'primeng/button';
 import { UpdateTransactionComponent } from '../update-transaction/update-transaction.component';
 import { MonthlyChartComponent } from '../monthly-chart/monthly-chart.component';
 import { format } from 'date-fns';
+import { TransactionItemComponent } from '../../shared/transaction-item/transaction-item.component';
 
 @Component({
   selector: 'app-spending',
@@ -26,6 +27,7 @@ import { format } from 'date-fns';
     ButtonModule,
     UpdateTransactionComponent,
     MonthlyChartComponent,
+    TransactionItemComponent,
   ],
   templateUrl: './spending.component.html',
   styleUrl: './spending.component.scss',
@@ -41,6 +43,9 @@ export class SpendingComponent implements OnInit {
   months: any;
   totals: any;
   currentMonth: string = '';
+
+  filteredTransactions: Transaction[] | undefined;
+  selectedCategory: string = '';
 
   categoryArray: { name: string; value: number; color: string }[] = []; // Array for labels and amounts
   colorPalette: string[] = [
@@ -90,6 +95,83 @@ export class SpendingComponent implements OnInit {
 
   setCategoryColor(category: any) {
     return category.color;
+  }
+
+  async refresh() {
+    await this.dataStore.getAllTransactions();
+  }
+  toggleDialog() {
+    this.isDialogOpen = true; // Open the dialog
+  }
+
+  handleDialogClose() {
+    this.isDialogOpen = false; // Handle dialog close event
+  }
+
+  getMonthlySpend(transactions: Transaction[]) {
+    // Use a Map to aggregate totals by month
+    const monthlyTotals = new Map<string, number>();
+
+    // Iterate over transactions
+    for (const transaction of transactions) {
+      if (
+        transaction.category !== 'Credit Card Payment' &&
+        transaction.category !== 'Income' &&
+        transaction.category !== 'Transfer'
+      ) {
+        const monthCode = this.unixToDate(transaction);
+
+        // Add the transaction amount to the corresponding month
+        const amount = Math.abs(parseFloat(transaction.amount)); // Convert string amount to number
+        monthlyTotals.set(
+          monthCode,
+          (monthlyTotals.get(monthCode) || 0) + amount
+        );
+      }
+    }
+
+    // Convert the Map to two arrays
+    this.months = Array.from(monthlyTotals.keys());
+    this.totals = Array.from(monthlyTotals.values());
+    this.currentMonth = this.months[this.months.length - 1];
+    this.categoryArray = this.separateCategories(this.transactionData);
+    this.onMonthSelected(this.currentMonth);
+    this.dataLoaded = true;
+  }
+
+  onMonthSelected(month: string) {
+    this.currentMonth = month;
+    if (this.transactionData) {
+      const filteredTransactions = this.transactionData.filter((txn) => {
+        const txnMonth = format(new Date(txn.transacted_at * 1000), 'MMM');
+        return txnMonth === month;
+      });
+
+      const categories = this.separateCategories(filteredTransactions);
+      this.categoryArray = categories;
+      this.buildChartData(categories); // Update pie chart data
+      this.cdr.detectChanges();
+    }
+  }
+
+  // when you click on a category,
+  // filter all the txns of that category AND of that date
+  // assign that to a variable AND a boolean to true to show the transactions
+
+  handleCategorySelection(category: string) {
+    console.log(this.currentMonth);
+    this.selectedCategory = this.selectedCategory === category ? '' : category;
+    this.filteredTransactions = this.transactionData
+      ?.filter((txn) => txn.category === category)
+      .filter((txn) => this.unixToDate(txn) === this.currentMonth)
+      .sort((a, b) => {
+        const dateA = new Date(a.transacted_at).getTime();
+        const dateB = new Date(b.transacted_at).getTime();
+        return dateB - dateA; // Sort in descending order (newest first)
+      });
+    this.cdr.detectChanges();
+    console.log(this.selectedCategory);
+    console.log(this.filteredTransactions);
   }
 
   private separateCategories(
@@ -151,64 +233,10 @@ export class SpendingComponent implements OnInit {
       },
     };
   }
-  async refresh() {
-    await this.dataStore.getAllTransactions();
-  }
-  toggleDialog() {
-    this.isDialogOpen = true; // Open the dialog
-  }
 
-  handleDialogClose() {
-    this.isDialogOpen = false; // Handle dialog close event
-  }
-
-  getMonthlySpend(transactions: Transaction[]) {
-    // Use a Map to aggregate totals by month
-    const monthlyTotals = new Map<string, number>();
-
-    // Iterate over transactions
-    for (const transaction of transactions) {
-      if (
-        transaction.category !== 'Credit Card Payment' &&
-        transaction.category !== 'Income'
-      ) {
-        // Convert the UNIX timestamp to a month code (e.g., 'Jan')
-        const monthCode = format(
-          new Date(transaction.transacted_at * 1000),
-          'MMM'
-        );
-
-        // Add the transaction amount to the corresponding month
-        const amount = Math.abs(parseFloat(transaction.amount)); // Convert string amount to number
-        monthlyTotals.set(
-          monthCode,
-          (monthlyTotals.get(monthCode) || 0) + amount
-        );
-        console.log('BBB monthly spend gotten', monthlyTotals);
-      }
-    }
-
-    // Convert the Map to two arrays
-    this.months = Array.from(monthlyTotals.keys());
-    this.totals = Array.from(monthlyTotals.values());
-    this.currentMonth = this.months[0];
-    this.categoryArray = this.separateCategories(this.transactionData);
-    this.buildChartData(this.categoryArray);
-    this.dataLoaded = true;
-  }
-
-  onMonthSelected(month: string) {
-    this.currentMonth = month;
-    if (this.transactionData) {
-      const filteredTransactions = this.transactionData.filter((txn) => {
-        const txnMonth = format(new Date(txn.transacted_at * 1000), 'MMM');
-        return txnMonth === month;
-      });
-
-      const categories = this.separateCategories(filteredTransactions);
-      this.categoryArray = categories;
-      this.buildChartData(categories); // Update pie chart data
-      this.cdr.detectChanges();
-    }
+  private unixToDate(txn: Transaction): string {
+    const monthCode = format(new Date(txn.transacted_at * 1000), 'MMM');
+    console.log(monthCode);
+    return monthCode;
   }
 }

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { DataStoreService } from '../../core/services/data-store/data-store.service';
 import { Subscription } from 'rxjs';
 import { DataStore, Transaction } from '../../core/models/account.model';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormatDollarPipe } from '../../core/pipes/format-dollar.pipe';
 import { FormatDatePipe } from '../../core/pipes/format-date.pipe';
 import { ButtonModule } from 'primeng/button';
@@ -48,7 +48,7 @@ export class TransactionComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private dataStoreService: DataStoreService,
-    private router: Router
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -60,7 +60,6 @@ export class TransactionComponent implements OnInit {
           this.transaction =
             data.transactions?.find((txn) => txn.id === this.transactionId) ||
             null;
-          if (!this.transaction) this.refresh();
         }
       );
     } else {
@@ -68,12 +67,8 @@ export class TransactionComponent implements OnInit {
     }
   }
 
-  async refresh() {
-    await this.dataStoreService.getAllTransactions();
-  }
-
   returnToDashboard() {
-    this.router.navigate([`account/${this.transaction?.account_id}`]);
+    this.location.back();
   }
 
   editCategory() {
