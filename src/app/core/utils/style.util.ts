@@ -6,6 +6,14 @@ export function assignIconColor(category: string) {
   return { 'background-color': COLOR_CATEGORIES[category], color: '#1a2551' };
 }
 
+export function assignAccountTypeIcon(type: string) {
+  return `fa-solid fa-${ACCOUNT_TYPE_ICONS[type]}`;
+}
+
+export function assignAccountTypeIconColor(type: string) {
+  return { 'background-color': ACCOUNT_TYPE_COLORS[type], color: '#1a2551' };
+}
+
 export const CATEGORY_ICONS: any = {
   'Food & Dining': 'utensils',
   Groceries: 'cart-shopping',
@@ -47,4 +55,18 @@ export const COLOR_CATEGORIES: any = {
   Income: '#138A36', //Forest Green
   'Credit Card Payment': '#a5857e',
   Transfer: '#848e5b',
+};
+
+export const ACCOUNT_TYPE_ICONS: any = {
+  Banks: 'building-columns',
+  'Credit Cards': 'credit-card',
+  Investments: 'arrow-trend-up',
+  Retirement: 'person-cane',
+};
+
+export const ACCOUNT_TYPE_COLORS: any = {
+  Banks: '#A26769', // Dusty Rose
+  'Credit Cards': '#D4A373', // Muted Sand
+  Investments: '#6B9080', // Soft Teal
+  Retirement: '#905E96', // Dusky Purple
 };

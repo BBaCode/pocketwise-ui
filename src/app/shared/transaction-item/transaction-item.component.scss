@@ -1,0 +1,17 @@
+.transaction-card {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  align-items: center;
+  font-family: Roboto;
+  font-size: 0.9rem;
+}
+.transaction-left {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 220px;
+}
+.transaction-avatar {
+  margin-right: 0.5rem;
+}

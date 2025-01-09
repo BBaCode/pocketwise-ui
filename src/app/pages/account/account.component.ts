@@ -15,6 +15,7 @@ import { Subscription } from 'rxjs';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { assignIcon, assignIconColor } from '../../core/utils/style.util';
 import { FormatDatePipe } from '../../core/pipes/format-date.pipe';
+import { TransactionItemComponent } from '../../shared/transaction-item/transaction-item.component';
 
 @Component({
   selector: 'app-account',
@@ -27,6 +28,7 @@ import { FormatDatePipe } from '../../core/pipes/format-date.pipe';
     AvatarModule,
     FormatDollarPipe,
     ProgressSpinnerModule,
+    TransactionItemComponent,
   ],
   templateUrl: './account.component.html',
   styleUrl: './account.component.scss',

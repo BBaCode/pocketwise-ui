@@ -9,9 +9,14 @@ import { Router } from '@angular/router';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { PanelModule } from 'primeng/panel';
 import { FormatDollarPipe } from '../../core/pipes/format-dollar.pipe';
-import { AuthService } from '../../core/services/auth/auth.service';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
+import { ACCOUNT_TYPES } from '../../core/constants';
+import {
+  assignAccountTypeIcon,
+  assignAccountTypeIconColor,
+} from '../../core/utils/style.util';
+import { AvatarModule } from 'primeng/avatar';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,6 +30,7 @@ import { TooltipModule } from 'primeng/tooltip';
     FormatDollarPipe,
     ButtonModule,
     TooltipModule,
+    AvatarModule,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -41,6 +47,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   //mocked for testing to not use my real accounts
   mockBalance: string = '100000.00';
   mockBalanceInt: number = parseFloat(this.mockBalance);
+
+  account_types = ACCOUNT_TYPES;
+  assignIcon = assignAccountTypeIcon;
+  assignIconColor = assignAccountTypeIconColor;
 
   constructor(
     private dataStoreService: DataStoreService,
@@ -71,7 +81,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     console.log('db destroyed');
   }
 
-  navigateToAccount(id: string) {
+  navigateToAccountGroup(id: string) {
     this.router.navigate(['/accounts', id.toLowerCase()]);
   }
 

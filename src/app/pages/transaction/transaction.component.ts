@@ -60,16 +60,11 @@ export class TransactionComponent implements OnInit {
           this.transaction =
             data.transactions?.find((txn) => txn.id === this.transactionId) ||
             null;
-          if (!this.transaction) this.refresh();
         }
       );
     } else {
       console.error('Unable to get transaction', this.transaction);
     }
-  }
-
-  async refresh() {
-    await this.dataStoreService.getAllTransactions();
   }
 
   returnToDashboard() {

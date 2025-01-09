@@ -4,7 +4,7 @@
 >
   <h2 class="account-type-title">{{ accountType | titlecase }}</h2>
 </div>
-<div class="account-list">
+<div *ngIf="accountsLoaded" class="account-list">
   <div class="account-card" *ngFor="let account of filteredAccounts">
     <p-card (click)="navigateToAccount(account.id)">
       <p class="account-title">{{ account.name }}</p>
@@ -16,4 +16,7 @@
       </div>
     </p-card>
   </div>
+</div>
+<div *ngIf="!accountsLoaded" class="spinner-container">
+  <p-progressSpinner ariaLabel="loading" />
 </div>

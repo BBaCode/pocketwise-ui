@@ -6,6 +6,21 @@
   margin-bottom: 1rem;
 }
 
+.account-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.account-avatar-title {
+  display: flex;
+  align-items: center;
+}
+
+.account-avatar-title > p {
+  margin-left: 1rem;
+}
+
 :host ::ng-deep .p-card:hover {
   &:hover {
     background-color: rgb(225, 231, 245);

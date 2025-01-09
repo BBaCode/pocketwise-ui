@@ -37,7 +37,10 @@
   <div class="transactions-categories">
     <p-card>
       <div *ngFor="let category of categoryArray">
-        <div class="category-information">
+        <div
+          (click)="handleCategorySelection(category.name)"
+          class="category-information"
+        >
           <div class="category-label">
             <div
               [style.backgroundColor]="setCategoryColor(category)"
@@ -49,6 +52,11 @@
           </div>
           <div>{{ category.value | formatDollar }}</div>
         </div>
+        <app-transaction-item
+          *ngIf="filteredTransactions && selectedCategory === category.name"
+          [transactions]="filteredTransactions"
+          [showIcon]="false"
+        ></app-transaction-item>
         <p-divider></p-divider>
       </div>
     </p-card>

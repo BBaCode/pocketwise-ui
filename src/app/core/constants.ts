@@ -18,3 +18,10 @@ export const CATEGORIES: any = [
   { name: 'Credit Card Payment' },
   { name: 'Transfer' },
 ];
+
+export const ACCOUNT_TYPES: any = [
+  { name: 'Banks' },
+  { name: 'Credit Cards' },
+  { name: 'Investments' },
+  { name: 'Retirement' },
+];

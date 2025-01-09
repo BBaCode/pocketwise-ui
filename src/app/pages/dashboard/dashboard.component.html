@@ -20,13 +20,24 @@
   </div>
   <div class="account-list" *ngIf="groupedAccounts.length">
     <div class="account-card" *ngFor="let group of groupedAccounts">
-      <p-card (click)="navigateToAccount(group.type)">
-        <p class="account-title">{{ group.type }}</p>
-        <div class="account-information">
-          <p [ngClass]="group.total > 0 ? 'green' : 'red'">
-            {{ group.total | formatDollar }}
-            <!-- {{ 33333 | formatDollar }} -->
-          </p>
+      <p-card (click)="navigateToAccountGroup(group.type)">
+        <div class="account-group">
+          <div class="account-avatar-title">
+            <p-avatar
+              class="transaction-avatar"
+              size="large"
+              [icon]="assignIcon(group.type)"
+              shape="circle"
+              [style]="assignIconColor(group.type)"
+            />
+            <p class="account-title">{{ group.type }}</p>
+          </div>
+          <div class="account-information">
+            <p [ngClass]="group.total > 0 ? 'green' : 'red'">
+              {{ group.total | formatDollar }}
+              <!-- {{ 33333 | formatDollar }} -->
+            </p>
+          </div>
         </div>
       </p-card>
     </div>
