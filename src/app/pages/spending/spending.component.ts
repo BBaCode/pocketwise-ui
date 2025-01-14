@@ -13,6 +13,7 @@ import { UpdateTransactionComponent } from '../update-transaction/update-transac
 import { MonthlyChartComponent } from '../monthly-chart/monthly-chart.component';
 import { format } from 'date-fns';
 import { TransactionItemComponent } from '../../shared/transaction-item/transaction-item.component';
+import { BudgetWidgetComponent } from '../../shared/budget-widget/budget-widget.component';
 
 @Component({
   selector: 'app-spending',
@@ -28,6 +29,7 @@ import { TransactionItemComponent } from '../../shared/transaction-item/transact
     UpdateTransactionComponent,
     MonthlyChartComponent,
     TransactionItemComponent,
+    BudgetWidgetComponent,
   ],
   templateUrl: './spending.component.html',
   styleUrl: './spending.component.scss',
@@ -42,10 +44,13 @@ export class SpendingComponent implements OnInit {
   options: any;
   months: any;
   totals: any;
+  incomeTotals: any;
   currentMonth: string = '';
 
   filteredTransactions: Transaction[] | undefined;
   selectedCategory: string = '';
+  isSpendView: boolean = true;
+  currentView: string = 'Spend';
 
   categoryArray: { name: string; value: number; color: string }[] = []; // Array for labels and amounts
   colorPalette: string[] = [
@@ -109,30 +114,33 @@ export class SpendingComponent implements OnInit {
   }
 
   getMonthlySpend(transactions: Transaction[]) {
-    // Use a Map to aggregate totals by month
     const monthlyTotals = new Map<string, number>();
+    const incomeTotals = new Map<string, number>();
 
-    // Iterate over transactions
     for (const transaction of transactions) {
+      const monthCode = this.unixToDate(transaction);
+      const amount = parseFloat(transaction.amount); // Correct conversion
+
       if (
         transaction.category !== 'Credit Card Payment' &&
         transaction.category !== 'Income' &&
         transaction.category !== 'Transfer'
       ) {
-        const monthCode = this.unixToDate(transaction);
-
-        // Add the transaction amount to the corresponding month
-        const amount = Math.abs(parseFloat(transaction.amount)); // Convert string amount to number
         monthlyTotals.set(
           monthCode,
-          (monthlyTotals.get(monthCode) || 0) + amount
+          (monthlyTotals.get(monthCode) || 0) + Math.abs(amount)
+        );
+      } else if (transaction.category === 'Income') {
+        incomeTotals.set(
+          monthCode,
+          (incomeTotals.get(monthCode) || 0) + Math.abs(amount)
         );
       }
     }
 
-    // Convert the Map to two arrays
     this.months = Array.from(monthlyTotals.keys());
     this.totals = Array.from(monthlyTotals.values());
+    this.incomeTotals = Array.from(incomeTotals.values());
     this.currentMonth = this.months[this.months.length - 1];
     this.categoryArray = this.separateCategories(this.transactionData);
     this.onMonthSelected(this.currentMonth);
@@ -159,7 +167,6 @@ export class SpendingComponent implements OnInit {
   // assign that to a variable AND a boolean to true to show the transactions
 
   handleCategorySelection(category: string) {
-    console.log(this.currentMonth);
     this.selectedCategory = this.selectedCategory === category ? '' : category;
     this.filteredTransactions = this.transactionData
       ?.filter((txn) => txn.category === category)
@@ -170,8 +177,11 @@ export class SpendingComponent implements OnInit {
         return dateB - dateA; // Sort in descending order (newest first)
       });
     this.cdr.detectChanges();
-    console.log(this.selectedCategory);
-    console.log(this.filteredTransactions);
+  }
+
+  toggleView() {
+    this.isSpendView = !this.isSpendView;
+    this.currentView = this.currentView === 'Spend' ? 'Budget' : 'Spend';
   }
 
   private separateCategories(
@@ -236,7 +246,6 @@ export class SpendingComponent implements OnInit {
 
   private unixToDate(txn: Transaction): string {
     const monthCode = format(new Date(txn.transacted_at * 1000), 'MMM');
-    console.log(monthCode);
     return monthCode;
   }
 }

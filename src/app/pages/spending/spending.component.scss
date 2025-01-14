@@ -45,3 +45,10 @@
   display: flex;
   justify-content: center;
 }
+
+.spend-budget-toggle {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 3;
+}

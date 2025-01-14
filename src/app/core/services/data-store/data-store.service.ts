@@ -10,6 +10,7 @@ import {
 import { MOCK_TRANSACTIONS } from '../../mock/transactions.mock';
 import { MOCK_ACCOUNTS } from '../../mock/accounts.mock';
 import { AuthService } from '../auth/auth.service';
+import { Budget, BudgetRequest } from '../../models/budget.model';
 
 @Injectable({
   providedIn: 'root',
@@ -23,17 +24,20 @@ export class DataStoreService {
   private store: {
     accounts: Array<Account> | null;
     transactions: Array<Transaction> | null;
+    budgets: Array<Budget> | null;
   };
 
   private initialData = {
     accounts: [],
     transactions: [],
+    budgets: [],
   };
 
   constructor(private http: HttpClient, private auth: AuthService) {
     this.store = {
       accounts: null,
       transactions: null,
+      budgets: null,
     };
 
     this.dataStore = new BehaviorSubject<any>(this.initialData);
@@ -142,6 +146,61 @@ export class DataStoreService {
           );
       } else {
         console.error('No auth token found. Cannot load new accounts.');
+      }
+    });
+  }
+
+  async addNewBudget(budgetRequest: BudgetRequest) {
+    await this.auth.getAuthToken().then((token) => {
+      const headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      };
+
+      if (token) {
+        this.http
+          .post(`${this.apiUrl}/new-budget`, budgetRequest, {
+            headers: headers,
+          })
+          .toPromise()
+          .then(
+            (message) => {
+              console.log(message);
+              this.updateConsumers();
+            },
+            (error) => {
+              console.log(error);
+            }
+          );
+      }
+    });
+  }
+
+  async getAllBudgets() {
+    await this.auth.getAuthToken().then((token) => {
+      const headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      };
+
+      if (token) {
+        this.http
+          .post(
+            `${this.apiUrl}/all-budgets`,
+            {},
+            {
+              headers: headers,
+            }
+          )
+          .subscribe(
+            (data: any) => {
+              this.store.budgets = data;
+              this.updateConsumers();
+            },
+            (error) => {
+              console.log(error);
+            }
+          );
       }
     });
   }

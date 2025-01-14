@@ -13,12 +13,15 @@
   <div class="netWorth">
     <p-panel class="netWorth" header="Net Worth">
       <p [ngClass]="netWorth > 0 ? 'green' : 'red'">
-        {{ netWorth | formatDollar }}
-        <!-- {{ 100000 | formatDollar }} -->
+        <!-- {{ netWorth | formatDollar }} -->
+        {{ 100000 | formatDollar }}
       </p>
     </p-panel>
   </div>
-  <div class="account-list" *ngIf="groupedAccounts.length">
+  <h3 class="m-1rem">Monthly Budget</h3>
+  <app-budget-widget (click)="navigateToSpending()"></app-budget-widget>
+  <h3 class="m-1rem">Accounts</h3>
+  <div class="m-1rem" *ngIf="groupedAccounts.length">
     <div class="account-card" *ngFor="let group of groupedAccounts">
       <p-card (click)="navigateToAccountGroup(group.type)">
         <div class="account-group">
@@ -34,8 +37,8 @@
           </div>
           <div class="account-information">
             <p [ngClass]="group.total > 0 ? 'green' : 'red'">
-              {{ group.total | formatDollar }}
-              <!-- {{ 33333 | formatDollar }} -->
+              <!-- {{ group.total | formatDollar }} -->
+              {{ 50000 | formatDollar }}
             </p>
           </div>
         </div>

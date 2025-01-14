@@ -1,0 +1,26 @@
+.no-budgets {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.new-budget {
+  margin: 1rem;
+
+  &-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 1rem;
+  }
+}
+
+.create-budget-toggle {
+  display: flex;
+  justify-content: center;
+}
+
+.submit-button {
+  margin-top: 0.5rem;
+}

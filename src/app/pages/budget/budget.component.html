@@ -1,0 +1,45 @@
+<div class="no-budgets" *ngIf="!budgets">
+  <h5>When you create budgets, they will show up here.</h5>
+</div>
+<div class="new-budget">
+  <p-card>
+    <div class="create-budget-toggle">
+      <p-button
+        (click)="toggleForm()"
+        [label]="toggleFormOn ? 'Cancel' : 'Create a Budget'"
+        [severity]="toggleFormOn ? 'danger' : 'primary'"
+        [icon]="toggleFormOn ? 'fa-solid fa-x' : 'fa-solid fa-plus'"
+      ></p-button>
+    </div>
+    <form class="new-budget-form" *ngIf="toggleFormOn" [formGroup]="budgetForm">
+      <label for="date-picker">Date</label>
+      <p-calendar
+        name="date-picker"
+        view="month"
+        dateFormat="mm/yy"
+        [readonlyInput]="true"
+        formControlName="date"
+      />
+      <label for="amount">Amount</label>
+      <p-inputNumber
+        formControlName="amount"
+        name="amount"
+        inputId="currency-us"
+        mode="currency"
+        currency="USD"
+        locale="en-US"
+      />
+      <p-button
+        [disabled]="!budgetForm.valid"
+        class="submit-button"
+        (click)="onSubmit()"
+        label="Submit"
+      ></p-button>
+    </form>
+  </p-card>
+</div>
+<div *ngIf="budgets">
+  <div *ngFor="let budget of budgets">
+    <div>{{ budget.amount }}</div>
+  </div>
+</div>

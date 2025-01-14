@@ -1,0 +1,28 @@
+.budget-chart-container {
+  margin: 1rem;
+}
+
+.budget-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+:host ::ng-deep p-chart canvas {
+  width: 150px !important;
+}
+
+.right {
+  position: relative;
+}
+
+.percent {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.no-budget-text {
+  margin-bottom: 0.5rem;
+}
