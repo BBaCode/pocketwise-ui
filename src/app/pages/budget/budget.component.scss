@@ -1,0 +1,103 @@
+.header {
+  display: flex;
+  justify-content: center;
+}
+
+.no-budgets {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.new-budget {
+  margin: 1rem;
+  position: relative;
+  padding-bottom: 1rem;
+
+  &-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 1rem;
+  }
+}
+
+.create-budget-toggle {
+  display: flex;
+  justify-content: center;
+}
+
+.submit-button {
+  margin-top: 0.5rem;
+}
+
+.budgets-container {
+  padding-bottom: 1rem;
+}
+
+.budgets-list {
+  margin: 1rem;
+}
+
+.budget-card {
+  margin-bottom: 1rem;
+}
+
+.budget-card-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.budget-card-bottom {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  gap: 5px;
+}
+
+.button-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.total {
+  position: fixed;
+  right: 1rem;
+  z-index: 2;
+  background-color: #3b82f6;
+  border-radius: 4px;
+  padding: 0.75rem 0.5rem;
+  color: white;
+}
+
+.spinner-container {
+  width: 100%;
+  height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.created-on {
+  padding-bottom: 1.5rem;
+}
+
+.budget-view-item {
+  border-bottom: 1px solid #d1d5db;
+  display: flex;
+  justify-content: space-between;
+  width: 1005;
+}
+
+.budget-view-item:nth-child(odd) {
+  background-color: #f3f4f6;
+}
+
+.viewBudgetContainer {
+  padding-top: 1rem;
+}

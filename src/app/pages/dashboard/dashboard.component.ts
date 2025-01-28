@@ -17,6 +17,7 @@ import {
   assignAccountTypeIconColor,
 } from '../../core/utils/style.util';
 import { AvatarModule } from 'primeng/avatar';
+import { BudgetWidgetComponent } from '../../shared/budget-widget/budget-widget.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -31,6 +32,7 @@ import { AvatarModule } from 'primeng/avatar';
     ButtonModule,
     TooltipModule,
     AvatarModule,
+    BudgetWidgetComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -52,37 +54,35 @@ export class DashboardComponent implements OnInit, OnDestroy {
   assignIcon = assignAccountTypeIcon;
   assignIconColor = assignAccountTypeIconColor;
 
-  constructor(
-    private dataStoreService: DataStoreService,
-    private router: Router
-  ) {
-    this.accounts$ = dataStoreService.dataStore.subscribe((data) => {
-      console.log('server error when trying to get data', this.serverError);
+  constructor(private ds: DataStoreService, private router: Router) {
+    this.accounts$ = ds.dataStore.subscribe((data) => {
       this.accountList = data.accounts;
       this.groupedAccounts = this.groupAccountsByType(this.accountList);
       this.netWorth = 0;
       this.generateNetWorth();
       this.userName = localStorage.getItem('userName') || '';
       this.accountsLoaded = true;
-      console.log('db constructed, account list:', this.accountList);
     });
   }
 
   ngOnInit(): void {
     this.accountsLoaded = false;
-    this.dataStoreService.getAccounts();
-    this.dataStoreService.getAllTransactions();
-    console.log('db inited');
+    this.ds.getAccounts();
+    this.ds.getAllTransactions();
+    this.ds.getAllBudgets();
   }
 
   ngOnDestroy(): void {
     this.accounts$.unsubscribe();
     this.accountsLoaded = false;
-    console.log('db destroyed');
   }
 
   navigateToAccountGroup(id: string) {
     this.router.navigate(['/accounts', id.toLowerCase()]);
+  }
+
+  navigateToSpending() {
+    this.router.navigate(['/spending']);
   }
 
   convertToNumber(s: string) {
@@ -91,12 +91,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   async refreshData() {
     this.accountsLoaded = false;
-    await this.dataStoreService.loadUpdatedAccounts();
+    await this.ds.loadUpdatedAccounts();
   }
 
   private generateNetWorth() {
     this.accountList?.forEach((account) => {
-      console.log(account.balance);
       this.netWorth += parseFloat(account['balance']);
     });
   }

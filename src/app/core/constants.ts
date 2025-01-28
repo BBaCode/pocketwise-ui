@@ -6,7 +6,7 @@ export const CATEGORIES: any = [
   { name: 'Health & Wellness' },
   { name: 'Shopping' },
   { name: 'Utilities' },
-  { name: 'Rent' },
+  { name: 'Housing' },
   { name: 'Travel' },
   { name: 'Education' },
   { name: 'Subscriptions' },

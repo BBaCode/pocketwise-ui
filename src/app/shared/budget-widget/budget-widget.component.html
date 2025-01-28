@@ -1,0 +1,32 @@
+<div *ngIf="budgets" class="budget-chart-container">
+  <p-card>
+    <div class="budget-container">
+      <div class="bc-left">
+        <div>Planned Expenses</div>
+        <div class="budget-date">{{ currentMonth }}/{{ currentYear }}</div>
+        <h3>{{ currentBudgetTotal | formatDollar }}</h3>
+        <p-tag [severity]="difference > 0 ? 'secondary' : 'danger'">
+          <div>{{ difference | formatDollar }} left</div>
+        </p-tag>
+      </div>
+      <div class="right">
+        <div class="percent">
+          <p-badge
+            [value]="percent"
+            [severity]="difference > 0 ? 'secondary' : 'danger'"
+            badgeSize="large"
+          />
+        </div>
+        <p-chart type="doughnut" [data]="data" [options]="options" />
+      </div>
+    </div>
+  </p-card>
+</div>
+<div *ngIf="!budgets" class="budget-chart-container">
+  <p-card>
+    <div class="no-budget-text">
+      You currently do not have a budget. Would you like to set one up?
+    </div>
+    <p-button (click)="navigateToBudget()" size="small">Click Here</p-button>
+  </p-card>
+</div>

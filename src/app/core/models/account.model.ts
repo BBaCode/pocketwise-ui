@@ -1,3 +1,5 @@
+import { Budget } from './budget.model';
+
 export interface Transaction {
   id: string;
   account_id: string;
@@ -33,4 +35,6 @@ interface Org {
 export interface DataStore {
   accounts: Array<Account> | null;
   transactions: Array<Transaction> | null;
+  budgets: Array<Budget> | null;
+  currentBudget: Budget | null;
 }

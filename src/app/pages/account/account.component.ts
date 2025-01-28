@@ -14,7 +14,7 @@ import { FormatDollarPipe } from '../../core/pipes/format-dollar.pipe';
 import { Subscription } from 'rxjs';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { assignIcon, assignIconColor } from '../../core/utils/style.util';
-import { FormatDatePipe } from '../../core/pipes/format-date.pipe';
+import { FormatUnixDatePipe } from '../../core/pipes/format-unix-date.pipe';
 import { TransactionItemComponent } from '../../shared/transaction-item/transaction-item.component';
 
 @Component({
@@ -22,7 +22,7 @@ import { TransactionItemComponent } from '../../shared/transaction-item/transact
   standalone: true,
   imports: [
     TableModule,
-    FormatDatePipe,
+    FormatUnixDatePipe,
     CardModule,
     CommonModule,
     AvatarModule,

@@ -10,6 +10,7 @@ import {
 import { MOCK_TRANSACTIONS } from '../../mock/transactions.mock';
 import { MOCK_ACCOUNTS } from '../../mock/accounts.mock';
 import { AuthService } from '../auth/auth.service';
+import { Budget, BudgetRequest } from '../../models/budget.model';
 
 @Injectable({
   providedIn: 'root',
@@ -23,17 +24,23 @@ export class DataStoreService {
   private store: {
     accounts: Array<Account> | null;
     transactions: Array<Transaction> | null;
+    budgets: Array<Budget> | null;
+    currentBudget: Budget | null;
   };
 
   private initialData = {
     accounts: [],
     transactions: [],
+    budgets: [],
+    currentBudget: null,
   };
 
   constructor(private http: HttpClient, private auth: AuthService) {
     this.store = {
       accounts: null,
       transactions: null,
+      budgets: null,
+      currentBudget: null,
     };
 
     this.dataStore = new BehaviorSubject<any>(this.initialData);
@@ -144,6 +151,123 @@ export class DataStoreService {
         console.error('No auth token found. Cannot load new accounts.');
       }
     });
+  }
+
+  async addNewBudget(budgetRequest: BudgetRequest) {
+    await this.auth.getAuthToken().then((token) => {
+      const headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      };
+
+      if (token) {
+        this.http
+          .post(`${this.apiUrl}/new-budget`, budgetRequest, {
+            headers: headers,
+          })
+          .toPromise()
+          .then(
+            (message) => {
+              console.log(message);
+              this.getAllBudgets();
+              this.updateConsumers();
+            },
+            (error) => {
+              console.log(error);
+            }
+          );
+      }
+    });
+  }
+
+  async getAllBudgets() {
+    await this.auth.getAuthToken().then((token) => {
+      const headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      };
+
+      if (token) {
+        this.http
+          .post(
+            `${this.apiUrl}/all-budgets`,
+            {},
+            {
+              headers: headers,
+            }
+          )
+          .subscribe(
+            (data: any) => {
+              this.store.budgets = data;
+              this.setCurrentMonthBudget();
+              this.updateConsumers();
+            },
+            (error) => {
+              console.log(error);
+            }
+          );
+      }
+    });
+  }
+
+  async deleteBudget(budgetId: string) {
+    await this.auth.getAuthToken().then((token) => {
+      const headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      };
+
+      if (token) {
+        this.http
+          .delete(`${this.apiUrl}/delete-budget/${budgetId}`, {
+            headers: headers,
+          })
+          .subscribe(
+            (message) => {
+              console.log(message);
+              this.getAllBudgets();
+            },
+            (error) => {
+              console.log(error);
+            }
+          );
+      }
+    });
+  }
+
+  async updateBudget(budgetId: string, budgetRequest: BudgetRequest) {
+    await this.auth.getAuthToken().then((token) => {
+      const headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      };
+
+      if (token) {
+        this.http
+          .put(`${this.apiUrl}/update-budget/${budgetId}`, budgetRequest, {
+            headers: headers,
+          })
+          .subscribe(
+            (message) => {
+              console.log(message);
+              this.getAllBudgets();
+            },
+            (error) => {
+              console.log(error);
+            }
+          );
+      }
+    });
+  }
+
+  private setCurrentMonthBudget() {
+    const todaysDate = new Date();
+    const currentMonth = todaysDate.getMonth() + 1;
+    const currentYear = todaysDate.getFullYear();
+    this.store.currentBudget =
+      this.store.budgets?.find(
+        (budget) => budget.month === currentMonth && budget.year === currentYear
+      ) ?? null;
   }
 
   // when next is called, all subscribers get the new data

@@ -1,8 +1,22 @@
 <div *ngIf="dataLoaded">
-  <div class="flex-center"><h2>Spending By Month</h2></div>
+  <div class="flex-center">
+    <h2>{{ currentView }} By Month</h2>
+  </div>
+  <div *ngIf="!isSpendView">
+    <app-budget-widget></app-budget-widget>
+  </div>
+  <p-button
+    [severity]="isSpendView ? 'primary' : 'warning'"
+    class="spend-budget-toggle"
+    size="small"
+    (click)="toggleView()"
+    >{{ currentView }} View</p-button
+  >
   <app-monthly-chart
     [months]="months"
     [totals]="totals"
+    [incomeTotals]="incomeTotals"
+    [isSpendView]="isSpendView"
     (barClicked)="onMonthSelected($event)"
   ></app-monthly-chart>
   <p-divider></p-divider>
@@ -38,6 +52,7 @@
     <p-card>
       <div *ngFor="let category of categoryArray">
         <div
+          *ngIf="category.value > 0"
           (click)="handleCategorySelection(category.name)"
           class="category-information"
         >
@@ -50,14 +65,22 @@
               {{ category.name }}
             </div>
           </div>
-          <div>{{ category.value | formatDollar }}</div>
+          <div>
+            {{ category.value | formatDollar }}
+            <span *ngIf="!isSpendView"
+              >/
+              <strong>{{
+                category.budgetValue || 0 | formatDollar
+              }}</strong></span
+            >
+          </div>
         </div>
         <app-transaction-item
           *ngIf="filteredTransactions && selectedCategory === category.name"
           [transactions]="filteredTransactions"
           [showIcon]="false"
         ></app-transaction-item>
-        <p-divider></p-divider>
+        <p-divider *ngIf="category.value > 0"></p-divider>
       </div>
     </p-card>
   </div>

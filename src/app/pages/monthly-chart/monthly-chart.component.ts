@@ -18,17 +18,22 @@ import { ChartModule } from 'primeng/chart';
 export class MonthlyChartComponent implements OnInit {
   data: any;
   options: any;
+  datasets: any[] = [];
+  documentStyle: any;
 
-  @Input() months: any;
-  @Input() totals: any;
+  @Input() months: string[] = [];
+  @Input() totals: number[] = [];
+  @Input() incomeTotals: number[] = [];
+  @Input() isSpendView: boolean = false;
   @Output() barClicked: EventEmitter<string> = new EventEmitter<string>();
 
   async ngOnInit() {
-    const documentStyle = getComputedStyle(document.documentElement);
-    const textColorSecondary = documentStyle.getPropertyValue(
+    this.documentStyle = getComputedStyle(document.documentElement);
+    const textColorSecondary = this.documentStyle.getPropertyValue(
       '--text-color-secondary'
     );
-    const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+    const surfaceBorder =
+      this.documentStyle.getPropertyValue('--surface-border');
 
     this.options = {
       maintainAspectRatio: false,
@@ -75,27 +80,6 @@ export class MonthlyChartComponent implements OnInit {
     }
   }
 
-  private initializeChart() {
-    this.data = {
-      labels: this.months,
-      datasets: [
-        {
-          label: 'Monthly Spending',
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.8)',
-            'rgba(255, 159, 64, 0.8)',
-            'rgba(255, 205, 86, 0.8)',
-            'rgba(75, 192, 192, 0.8)',
-            'rgba(54, 162, 235, 0.8)',
-            'rgba(153, 102, 255, 0.8)',
-            'rgba(201, 203, 207, 0.8)',
-          ],
-          data: this.totals,
-        },
-      ],
-    };
-  }
-
   handleClick(event: any, elements: any) {
     console.log(event, elements);
     console.log('handle click');
@@ -104,6 +88,30 @@ export class MonthlyChartComponent implements OnInit {
       const month = this.months[index]; // Get the corresponding month
       console.log(month);
       this.barClicked.emit(month); // Emit the clicked month to the parent
+    }
+  }
+
+  private initializeChart() {
+    this.initializeDataSets();
+    this.data = {
+      labels: this.months,
+      datasets: this.datasets,
+    };
+  }
+
+  private initializeDataSets() {
+    this.datasets = [];
+    this.datasets.push({
+      label: 'Monthly Spending',
+      backgroundColor: this.documentStyle.getPropertyValue('--blue-500'),
+      data: this.totals,
+    });
+    if (!this.isSpendView) {
+      this.datasets.push({
+        label: 'Income',
+        backgroundColor: this.documentStyle.getPropertyValue('--green-500'),
+        data: this.incomeTotals,
+      });
     }
   }
 }

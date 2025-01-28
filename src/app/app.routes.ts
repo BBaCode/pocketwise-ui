@@ -8,6 +8,7 @@ import { AuthGuard } from '../app/core/services/auth-guard/auth-guard.guard'; //
 import { LandingPageComponent } from './pages/landing-page/landing-page.component';
 import { TransactionComponent } from './pages/transaction/transaction.component';
 import { AccountGroupComponent } from './pages/account-group/account-group.component';
+import { BudgetComponent } from './pages/budget/budget.component';
 
 export const routes: Routes = [
   { path: 'signup', component: SignupComponent },
@@ -24,6 +25,11 @@ export const routes: Routes = [
   {
     path: 'spending',
     component: SpendingComponent,
+    canActivate: [AuthGuard], // Protect this route
+  },
+  {
+    path: 'budget',
+    component: BudgetComponent,
     canActivate: [AuthGuard], // Protect this route
   },
   {

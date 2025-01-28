@@ -22,7 +22,7 @@
     <p-card>
       <div class="transaction-card-header">
         <div>{{ transaction.payee }}</div>
-        <div>{{ transaction.transacted_at | formatDate }}</div>
+        <div>{{ transaction.transacted_at | formatUnixDate }}</div>
       </div>
       <p-divider></p-divider>
       <div class="transaction-card-body">

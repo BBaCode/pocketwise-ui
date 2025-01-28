@@ -37,7 +37,7 @@ export class NavComponent implements OnInit, OnDestroy {
               ? {
                   label: 'Login',
                   routerLink: '/login',
-                  icon: 'pi pi-sign-in',
+                  icon: 'fa-solid fa-sign-in',
                 }
               : {
                   label: 'Logout',
@@ -45,25 +45,30 @@ export class NavComponent implements OnInit, OnDestroy {
                     this.auth.logout();
                   },
                   routerLink: '/login',
-                  icon: 'pi pi-sign-out',
+                  icon: 'fa-solid fa-sign-out',
                 },
             {
               label: 'Signup',
               routerLink: '/signup',
-              icon: 'pi pi-user-plus',
+              icon: 'fa-solid fa-user-plus',
             },
           ],
-          icon: 'pi pi-user',
+          icon: 'fa-solid fa-user',
         },
         {
           label: 'Dashboard',
           routerLink: '/dashboard',
-          icon: 'pi pi-home',
+          icon: 'fa-solid fa-home',
         },
         {
           label: 'Spending',
           routerLink: '/spending',
-          icon: 'pi pi-credit-card',
+          icon: 'fa-solid fa-credit-card',
+        },
+        {
+          label: 'Budget',
+          routerLink: '/budget',
+          icon: 'fa-solid fa-scale-balanced',
         },
       ];
     });

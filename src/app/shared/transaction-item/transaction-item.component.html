@@ -11,7 +11,7 @@
       />
       <div>
         <strong>{{ transaction.payee }}</strong>
-        <p>{{ transaction["transacted_at"] | formatDate }}</p>
+        <p>{{ transaction["transacted_at"] | formatUnixDate }}</p>
       </div>
     </div>
     <span>{{ transaction.amount | formatDollar }}</span>
