@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { DataStore, Transaction } from '../../core/models/account.model';
 import { CommonModule, Location } from '@angular/common';
 import { FormatDollarPipe } from '../../core/pipes/format-dollar.pipe';
-import { FormatDatePipe } from '../../core/pipes/format-date.pipe';
+import { FormatUnixDatePipe } from '../../core/pipes/format-unix-date.pipe';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { AvatarModule } from 'primeng/avatar';
@@ -22,7 +22,7 @@ import { TooltipModule } from 'primeng/tooltip';
   imports: [
     CommonModule,
     FormatDollarPipe,
-    FormatDatePipe,
+    FormatUnixDatePipe,
     ButtonModule,
     CardModule,
     AvatarModule,

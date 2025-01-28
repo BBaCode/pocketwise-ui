@@ -3,14 +3,19 @@
     <div class="budget-container">
       <div class="bc-left">
         <div>Planned Expenses</div>
-        <h3>{{ budgetAmount | formatDollar }}</h3>
-        <p-tag severity="secondary">
+        <div class="budget-date">{{ currentMonth }}/{{ currentYear }}</div>
+        <h3>{{ currentBudgetTotal | formatDollar }}</h3>
+        <p-tag [severity]="difference > 0 ? 'secondary' : 'danger'">
           <div>{{ difference | formatDollar }} left</div>
         </p-tag>
       </div>
       <div class="right">
         <div class="percent">
-          <p-badge [value]="percent" severity="secondary" badgeSize="large" />
+          <p-badge
+            [value]="percent"
+            [severity]="difference > 0 ? 'secondary' : 'danger'"
+            badgeSize="large"
+          />
         </div>
         <p-chart type="doughnut" [data]="data" [options]="options" />
       </div>

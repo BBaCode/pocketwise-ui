@@ -54,11 +54,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   assignIcon = assignAccountTypeIcon;
   assignIconColor = assignAccountTypeIconColor;
 
-  constructor(
-    private dataStoreService: DataStoreService,
-    private router: Router
-  ) {
-    this.accounts$ = dataStoreService.dataStore.subscribe((data) => {
+  constructor(private ds: DataStoreService, private router: Router) {
+    this.accounts$ = ds.dataStore.subscribe((data) => {
       this.accountList = data.accounts;
       this.groupedAccounts = this.groupAccountsByType(this.accountList);
       this.netWorth = 0;
@@ -70,8 +67,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.accountsLoaded = false;
-    this.dataStoreService.getAccounts();
-    this.dataStoreService.getAllTransactions();
+    this.ds.getAccounts();
+    this.ds.getAllTransactions();
+    this.ds.getAllBudgets();
   }
 
   ngOnDestroy(): void {
@@ -93,7 +91,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   async refreshData() {
     this.accountsLoaded = false;
-    await this.dataStoreService.loadUpdatedAccounts();
+    await this.ds.loadUpdatedAccounts();
   }
 
   private generateNetWorth() {

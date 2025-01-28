@@ -36,4 +36,5 @@ export interface DataStore {
   accounts: Array<Account> | null;
   transactions: Array<Transaction> | null;
   budgets: Array<Budget> | null;
+  currentBudget: Budget | null;
 }

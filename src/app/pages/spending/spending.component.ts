@@ -14,6 +14,7 @@ import { MonthlyChartComponent } from '../monthly-chart/monthly-chart.component'
 import { format } from 'date-fns';
 import { TransactionItemComponent } from '../../shared/transaction-item/transaction-item.component';
 import { BudgetWidgetComponent } from '../../shared/budget-widget/budget-widget.component';
+import { Budget } from '../../core/models/budget.model';
 
 @Component({
   selector: 'app-spending',
@@ -46,13 +47,19 @@ export class SpendingComponent implements OnInit {
   totals: any;
   incomeTotals: any;
   currentMonth: string = '';
+  currentBudget: Budget | null = null;
 
   filteredTransactions: Transaction[] | undefined;
   selectedCategory: string = '';
   isSpendView: boolean = true;
   currentView: string = 'Spend';
 
-  categoryArray: { name: string; value: number; color: string }[] = []; // Array for labels and amounts
+  categoryArray: {
+    name: string;
+    value: number;
+    color: string;
+    budgetValue?: number;
+  }[] = []; // Array for labels and amounts
   colorPalette: string[] = [
     '#FF6384',
     '#36A2EB',
@@ -84,10 +91,12 @@ export class SpendingComponent implements OnInit {
     // may not need because its called in the dashboard
     if (!this.dataStore.dataStore.value.transactions)
       this.dataStore.getAllTransactions();
+    this.dataStore.getAllBudgets();
     this.transactions$ = await this.dataStore.dataStore.subscribe(
       (data: DataStore) => {
         if (!this.transactionData) this.refresh();
         this.transactionData = data.transactions;
+        this.currentBudget = data.currentBudget;
         if (this.transactionData) {
           this.nonCategorizedTransactions = this.transactionData?.filter(
             (txn) => txn.category === 'Unknown'
@@ -157,6 +166,7 @@ export class SpendingComponent implements OnInit {
 
       const categories = this.separateCategories(filteredTransactions);
       this.categoryArray = categories;
+      this.matchBudgetToCategory();
       this.buildChartData(categories); // Update pie chart data
       this.cdr.detectChanges();
     }
@@ -195,7 +205,7 @@ export class SpendingComponent implements OnInit {
       'Health & Wellness': 0,
       Shopping: 0,
       Utilities: 0,
-      Rent: 0,
+      Housing: 0,
       Travel: 0,
       Education: 0,
       Subscriptions: 0,
@@ -247,5 +257,50 @@ export class SpendingComponent implements OnInit {
   private unixToDate(txn: Transaction): string {
     const monthCode = format(new Date(txn.transacted_at * 1000), 'MMM');
     return monthCode;
+  }
+
+  // I need to add a method to match each category total to the budgeted amount
+  // and show both values in the budget view of the spending page
+  // This should take in the current budget and list of categories and match them up, renaming
+  // the category to the budgeted category name
+
+  private matchBudgetToCategory() {
+    if (this.currentBudget && this.categoryArray) {
+      this.categoryArray.forEach((category) => {
+        if (category.name === 'Food & Dining') {
+          category.budgetValue = this.currentBudget?.food;
+        } else if (category.name === 'Gifts & Donations') {
+          category.budgetValue = this.currentBudget?.gifts;
+        } else if (category.name === 'Health & Wellness') {
+          category.budgetValue = this.currentBudget?.health;
+        } else if (category.name === 'Personal Care') {
+          category.budgetValue = this.currentBudget?.personal_care;
+        } else if (category.name === 'Entertainment') {
+          category.budgetValue = this.currentBudget?.entertainment;
+        } else if (category.name === 'Education') {
+          category.budgetValue = this.currentBudget?.education;
+        } else if (category.name === 'Groceries') {
+          category.budgetValue = this.currentBudget?.groceries;
+        } else if (category.name === 'Insurance') {
+          category.budgetValue = this.currentBudget?.insurance;
+        } else if (category.name === 'Housing') {
+          category.budgetValue = this.currentBudget?.housing;
+        } else if (category.name === 'Shopping') {
+          category.budgetValue = this.currentBudget?.shopping;
+        } else if (category.name === 'Subscriptions') {
+          category.budgetValue = this.currentBudget?.subscriptions;
+        } else if (category.name === 'Transportation') {
+          category.budgetValue = this.currentBudget?.transportation;
+        } else if (category.name === 'Travel') {
+          category.budgetValue = this.currentBudget?.travel;
+        } else if (category.name === 'Utilities') {
+          category.budgetValue = this.currentBudget?.utilities;
+        } else if (category.name === 'Other') {
+          category.budgetValue = this.currentBudget?.other;
+        }
+      });
+    }
+
+    console.log(this.categoryArray);
   }
 }

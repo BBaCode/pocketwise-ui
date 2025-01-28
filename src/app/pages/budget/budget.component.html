@@ -1,17 +1,21 @@
+<div class="header">
+  <h1>Your Budgets</h1>
+</div>
 <div class="no-budgets" *ngIf="!budgets">
   <h5>When you create budgets, they will show up here.</h5>
 </div>
 <div class="new-budget">
+  <div *ngIf="isFormOpen" class="total">Total: {{ total | formatDollar }}</div>
   <p-card>
     <div class="create-budget-toggle">
       <p-button
-        (click)="toggleForm()"
-        [label]="toggleFormOn ? 'Cancel' : 'Create a Budget'"
-        [severity]="toggleFormOn ? 'danger' : 'primary'"
-        [icon]="toggleFormOn ? 'fa-solid fa-x' : 'fa-solid fa-plus'"
+        (click)="toggleNewForm()"
+        [label]="isFormOpen ? 'Cancel' : 'Create a Budget'"
+        [severity]="isFormOpen ? 'danger' : 'primary'"
+        [icon]="isFormOpen ? 'fa-solid fa-x' : 'fa-solid fa-plus'"
       ></p-button>
     </div>
-    <form class="new-budget-form" *ngIf="toggleFormOn" [formGroup]="budgetForm">
+    <form class="new-budget-form" *ngIf="isFormOpen" [formGroup]="budgetForm">
       <label for="date-picker">Date</label>
       <p-calendar
         name="date-picker"
@@ -20,10 +24,133 @@
         [readonlyInput]="true"
         formControlName="date"
       />
-      <label for="amount">Amount</label>
+      <p-messages
+        *ngIf="message.length > 0"
+        [(value)]="message"
+        [enableService]="false"
+        [closable]="false"
+      />
+      <label for="food">Food & Dining</label>
       <p-inputNumber
-        formControlName="amount"
-        name="amount"
+        formControlName="food"
+        name="food"
+        inputId="currency-us"
+        mode="currency"
+        currency="USD"
+        locale="en-US"
+      />
+      <label for="groceries">Groceries</label>
+      <p-inputNumber
+        formControlName="groceries"
+        name="groceries"
+        inputId="currency-us"
+        mode="currency"
+        currency="USD"
+        locale="en-US"
+      />
+      <label for="transportation">Transportation</label>
+      <p-inputNumber
+        formControlName="transportation"
+        name="transportation"
+        inputId="currency-us"
+        mode="currency"
+        currency="USD"
+        locale="en-US"
+      />
+      <label for="health">Health</label>
+      <p-inputNumber
+        formControlName="health"
+        name="health"
+        inputId="currency-us"
+        mode="currency"
+        currency="USD"
+        locale="en-US"
+      />
+      <label for="shopping">Shopping</label>
+      <p-inputNumber
+        formControlName="shopping"
+        name="shopping"
+        inputId="currency-us"
+        mode="currency"
+        currency="USD"
+        locale="en-US"
+      />
+      <label for="utilities">Utilities</label>
+      <p-inputNumber
+        formControlName="utilities"
+        name="utilities"
+        inputId="currency-us"
+        mode="currency"
+        currency="USD"
+        locale="en-US"
+      />
+      <label for="housing">Housing</label>
+      <p-inputNumber
+        formControlName="housing"
+        name="housing"
+        inputId="currency-us"
+        mode="currency"
+        currency="USD"
+        locale="en-US"
+      />
+      <label for="travel">Travel</label>
+      <p-inputNumber
+        formControlName="travel"
+        name="travel"
+        inputId="currency-us"
+        mode="currency"
+        currency="USD"
+        locale="en-US"
+      />
+      <label for="education">Education</label>
+      <p-inputNumber
+        formControlName="education"
+        name="education"
+        inputId="currency-us"
+        mode="currency"
+        currency="USD"
+        locale="en-US"
+      />
+      <label for="subscriptions">Subscriptions</label>
+      <p-inputNumber
+        formControlName="subscriptions"
+        name="subscriptions"
+        inputId="currency-us"
+        mode="currency"
+        currency="USD"
+        locale="en-US"
+      />
+      <label for="gifts">Gifts & Donations</label>
+      <p-inputNumber
+        formControlName="gifts"
+        name="gifts"
+        inputId="currency-us"
+        mode="currency"
+        currency="USD"
+        locale="en-US"
+      />
+      <label for="insurance">Insurance</label>
+      <p-inputNumber
+        formControlName="insurance"
+        name="insurance"
+        inputId="currency-us"
+        mode="currency"
+        currency="USD"
+        locale="en-US"
+      />
+      <label for="personal_care">Personal Care</label>
+      <p-inputNumber
+        formControlName="personal_care"
+        name="personal_care"
+        inputId="currency-us"
+        mode="currency"
+        currency="USD"
+        locale="en-US"
+      />
+      <label for="other">Other</label>
+      <p-inputNumber
+        formControlName="other"
+        name="other"
         inputId="currency-us"
         mode="currency"
         currency="USD"
@@ -38,8 +165,284 @@
     </form>
   </p-card>
 </div>
-<div *ngIf="budgets">
-  <div *ngFor="let budget of budgets">
-    <div>{{ budget.amount }}</div>
+<div class="budgets-container" *ngIf="budgets && dataLoaded">
+  <div class="budgets-list" *ngFor="let budget of budgets; let i = index">
+    <div class="budget-card">
+      <p-card>
+        <div class="budget-card-top">
+          <div>{{ budget.month }}/{{ budget.year }}</div>
+          <div>{{ budget.total | formatDollar }}</div>
+        </div>
+        <div class="created-on">
+          Created on: {{ budget.created_at | formatDate }}
+        </div>
+        <div class="budget-card-bottom">
+          <p-button
+            (click)="toggleBudgetView(i)"
+            severity="success"
+            icon="fa-solid fa-eye"
+            size="small"
+            pTooltip="View Budget"
+            tooltipPosition="left"
+          />
+          <p-button
+            (click)="toggleEditForm(i)"
+            severity="info"
+            icon="fa-solid fa-pencil"
+            size="small"
+            pTooltip="Edit Budget"
+            tooltipPosition="left"
+          />
+          <p-button
+            (click)="deleteBudget(budget.id)"
+            severity="danger"
+            icon="fa-solid fa-trash-can"
+            size="small"
+            pTooltip="Delete Budget"
+            tooltipPosition="left"
+          />
+        </div>
+        <form
+          class="new-budget-form"
+          *ngIf="currentEditBudgetInView === i"
+          [formGroup]="getBudgetForm(i)"
+        >
+          <label for="date-picker">Date</label>
+          <p-calendar
+            name="date-picker"
+            view="month"
+            dateFormat="mm/yy"
+            [readonlyInput]="true"
+            formControlName="date"
+          />
+          <label for="food">Food & Dining</label>
+          <p-inputNumber
+            formControlName="food"
+            name="food"
+            inputId="currency-us"
+            mode="currency"
+            currency="USD"
+            locale="en-US"
+            placeholder="{{ budget.food | formatDollar }}"
+          />
+          <label for="groceries">Groceries</label>
+          <p-inputNumber
+            formControlName="groceries"
+            name="groceries"
+            inputId="currency-us"
+            mode="currency"
+            currency="USD"
+            locale="en-US"
+            placeholder="{{ budget.groceries | formatDollar }}"
+          />
+          <label for="transportation">Transportation</label>
+          <p-inputNumber
+            formControlName="transportation"
+            name="transportation"
+            inputId="currency-us"
+            mode="currency"
+            currency="USD"
+            locale="en-US"
+            placeholder="{{ budget.transportation | formatDollar }}"
+          />
+          <label for="health">Health</label>
+          <p-inputNumber
+            formControlName="health"
+            name="health"
+            inputId="currency-us"
+            mode="currency"
+            currency="USD"
+            locale="en-US"
+            placeholder="{{ budget.health | formatDollar }}"
+          />
+          <label for="shopping">Shopping</label>
+          <p-inputNumber
+            formControlName="shopping"
+            name="shopping"
+            inputId="currency-us"
+            mode="currency"
+            currency="USD"
+            locale="en-US"
+            placeholder="{{ budget.shopping | formatDollar }}"
+          />
+          <label for="utilities">Utilities</label>
+          <p-inputNumber
+            formControlName="utilities"
+            name="utilities"
+            inputId="currency-us"
+            mode="currency"
+            currency="USD"
+            locale="en-US"
+            placeholder="{{ budget.utilities | formatDollar }}"
+          />
+          <label for="housing">Housing</label>
+          <p-inputNumber
+            formControlName="housing"
+            name="housing"
+            inputId="currency-us"
+            mode="currency"
+            currency="USD"
+            locale="en-US"
+            placeholder="{{ budget.housing | formatDollar }}"
+          />
+          <label for="travel">Travel</label>
+          <p-inputNumber
+            formControlName="travel"
+            name="travel"
+            inputId="currency-us"
+            mode="currency"
+            currency="USD"
+            locale="en-US"
+            placeholder="{{ budget.travel | formatDollar }}"
+          />
+          <label for="education">Education</label>
+          <p-inputNumber
+            formControlName="education"
+            name="education"
+            inputId="currency-us"
+            mode="currency"
+            currency="USD"
+            locale="en-US"
+            placeholder="{{ budget.education | formatDollar }}"
+          />
+          <label for="subscriptions">Subscriptions</label>
+          <p-inputNumber
+            formControlName="subscriptions"
+            name="subscriptions"
+            inputId="currency-us"
+            mode="currency"
+            currency="USD"
+            locale="en-US"
+            placeholder="{{ budget.subscriptions | formatDollar }}"
+          />
+          <label for="gifts">Gifts & Donations</label>
+          <p-inputNumber
+            formControlName="gifts"
+            name="gifts"
+            inputId="currency-us"
+            mode="currency"
+            currency="USD"
+            locale="en-US"
+            placeholder="{{ budget.gifts | formatDollar }}"
+          />
+          <label for="insurance">Insurance</label>
+          <p-inputNumber
+            formControlName="insurance"
+            name="insurance"
+            inputId="currency-us"
+            mode="currency"
+            currency="USD"
+            locale="en-US"
+            placeholder="{{ budget.insurance | formatDollar }}"
+          />
+          <label for="personal_care">Personal Care</label>
+          <p-inputNumber
+            formControlName="personal_care"
+            name="personal_care"
+            inputId="currency-us"
+            mode="currency"
+            currency="USD"
+            locale="en-US"
+            placeholder="{{ budget.personal_care | formatDollar }}"
+          />
+          <label for="other">Other</label>
+          <p-inputNumber
+            formControlName="other"
+            name="other"
+            inputId="currency-us"
+            mode="currency"
+            currency="USD"
+            locale="en-US"
+            placeholder="{{ budget.other | formatDollar }}"
+          />
+          <div class="button-container">
+            <p-button
+              class="submit-button"
+              (click)="onEditSubmit(i)"
+              label="Submit"
+            ></p-button>
+            <p-button
+              class="submit-button"
+              (click)="toggleEditForm(-1)"
+              label="Cancel"
+              severity="danger"
+            ></p-button>
+          </div>
+        </form>
+        <div class="viewBudgetContainer" *ngIf="currentViewBudgetInView === i">
+          <div class="budget-view-item">
+            <div>Total:</div>
+            <div>{{ budget.total | formatDollar }}</div>
+          </div>
+          <div class="budget-view-item">
+            <div>Food:</div>
+            <div>{{ budget.food | formatDollar }}</div>
+          </div>
+          <div class="budget-view-item">
+            <div>Groceries:</div>
+            <div>{{ budget.groceries | formatDollar }}</div>
+          </div>
+          <div class="budget-view-item">
+            <div>Transortation:</div>
+            <div>{{ budget.transportation | formatDollar }}</div>
+          </div>
+          <div class="budget-view-item">
+            <div>Entertainment:</div>
+            <div>{{ budget.entertainment | formatDollar }}</div>
+          </div>
+          <div class="budget-view-item">
+            <div>Health:</div>
+            <div>{{ budget.health | formatDollar }}</div>
+          </div>
+          <div class="budget-view-item">
+            <div>Shopping:</div>
+            <div>{{ budget.shopping | formatDollar }}</div>
+          </div>
+          <div class="budget-view-item">
+            <div>Utilities:</div>
+            <div>{{ budget.utilities | formatDollar }}</div>
+          </div>
+          <div class="budget-view-item">
+            <div>Housing:</div>
+            <div>{{ budget.housing | formatDollar }}</div>
+          </div>
+          <div class="budget-view-item">
+            <div>Travel:</div>
+            <div>{{ budget.travel | formatDollar }}</div>
+          </div>
+          <div class="budget-view-item">
+            <div>Education:</div>
+            <div>{{ budget.education | formatDollar }}</div>
+          </div>
+          <div class="budget-view-item">
+            <div>Subscriptions:</div>
+            <div>{{ budget.subscriptions | formatDollar }}</div>
+          </div>
+          <div class="budget-view-item">
+            <div>Gifts:</div>
+            <div>{{ budget.gifts | formatDollar }}</div>
+          </div>
+          <div class="budget-view-item">
+            <div>Insurance:</div>
+            <div>{{ budget.insurance | formatDollar }}</div>
+          </div>
+          <div class="budget-view-item">
+            <div>Personal Care</div>
+            <div>{{ budget.personal_care | formatDollar }}</div>
+          </div>
+          <div class="budget-view-item">
+            <div>Other:</div>
+            <div>{{ budget.other | formatDollar }}</div>
+          </div>
+          <div class="budget-view-item">
+            <div>Unknown</div>
+            <div>{{ budget.unknown | formatDollar }}</div>
+          </div>
+        </div>
+      </p-card>
+    </div>
   </div>
+</div>
+<div *ngIf="!dataLoaded" class="spinner-container">
+  <p-progressSpinner ariaLabel="loading" />
 </div>

@@ -65,7 +65,15 @@
               {{ category.name }}
             </div>
           </div>
-          <div>{{ category.value | formatDollar }}</div>
+          <div>
+            {{ category.value | formatDollar }}
+            <span *ngIf="!isSpendView"
+              >/
+              <strong>{{
+                category.budgetValue || 0 | formatDollar
+              }}</strong></span
+            >
+          </div>
         </div>
         <app-transaction-item
           *ngIf="filteredTransactions && selectedCategory === category.name"
