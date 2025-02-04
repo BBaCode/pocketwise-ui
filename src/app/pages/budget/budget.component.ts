@@ -102,8 +102,6 @@ export class BudgetComponent implements OnInit, OnDestroy {
         if (this.budgets) {
           let isDuplicate = false; // Flag to track duplicates
           this.budgets.forEach((budget) => {
-            console.log(budget.month + '/' + budget.year);
-            console.log(this.month + '/' + this.year);
             if (budget.month === this.month && budget.year === this.year) {
               isDuplicate = true; // Set flag if duplicate is found
               this.budgetForm.setErrors({ invalid: true });
@@ -128,6 +126,16 @@ export class BudgetComponent implements OnInit, OnDestroy {
     this.ds.getAllBudgets();
     this.budgets$ = this.ds.dataStore.subscribe((store: DataStore) => {
       this.budgets = store.budgets;
+
+      if (this.budgets) {
+        this.budgets.sort((a, b) => {
+          if (b.year !== a.year) {
+            return b.year - a.year; // Sort by year descending
+          }
+          return b.month - a.month; // If same year, sort by month descending
+        });
+      }
+
       this.initExistingBudgets();
       this.dataLoaded = true;
     });
@@ -175,7 +183,6 @@ export class BudgetComponent implements OnInit, OnDestroy {
         const value = formValues[key as keyof typeof formValues] || 0;
         return sum + (typeof value === 'number' ? value : 0);
       }, 0);
-    console.log(this.total);
   }
 
   async deleteBudget(budgetId: number) {
@@ -225,8 +232,6 @@ export class BudgetComponent implements OnInit, OnDestroy {
       this.year = date.getFullYear();
     }
     const values: Budget = editedBudgetForm.value;
-    console.log('values from form', values);
-    console.log('total', this.total);
     this.calculateTotal(editedBudgetForm);
 
     const budgetRequest: BudgetRequest = {
@@ -250,7 +255,6 @@ export class BudgetComponent implements OnInit, OnDestroy {
       other: values.other,
       unknown: values.unknown,
     };
-    console.log('budget request', budgetRequest);
     this.dataLoaded = false;
     await this.ds.updateBudget(values.id.toString(), budgetRequest);
     this.toggleEditForm(-1);

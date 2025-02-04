@@ -1,4 +1,7 @@
-<div *ngIf="dataLoaded">
+<div
+  class="spending-container"
+  *ngIf="dataLoaded && transactionData && transactionData.length > 0"
+>
   <div class="flex-center">
     <h2>{{ currentView }} By Month</h2>
   </div>
@@ -13,20 +16,15 @@
     >{{ currentView }} View</p-button
   >
   <app-monthly-chart
-    [months]="months"
+    [months]="dates"
     [totals]="totals"
     [incomeTotals]="incomeTotals"
     [isSpendView]="isSpendView"
-    (barClicked)="onMonthSelected($event)"
+    (barClicked)="onDateSelected($event)"
   ></app-monthly-chart>
   <p-divider></p-divider>
   <div class="flex-center">
-    <h3>{{ currentMonth }}</h3>
-  </div>
-  <div class="pie-container">
-    <p-card
-      ><p-chart type="pie" [data]="chartData" [options]="options"
-    /></p-card>
+    <h3>{{ currentDate }}</h3>
   </div>
   <div
     class="transactions-categories"
@@ -48,44 +46,57 @@
     [isVisible]="isDialogOpen"
     (close)="handleDialogClose()"
   ></app-update-transaction>
-  <div class="transactions-categories">
-    <p-card>
-      <div *ngFor="let category of categoryArray">
-        <div
-          *ngIf="category.value > 0"
-          (click)="handleCategorySelection(category.name)"
-          class="category-information"
-        >
-          <div class="category-label">
-            <div
-              [style.backgroundColor]="setCategoryColor(category)"
-              class="key-color"
-            ></div>
+
+  <div class="bottom-container">
+    <div class="pie-container">
+      <p-card
+        ><p-chart type="pie" [data]="chartData" [options]="options"
+      /></p-card>
+    </div>
+    <div class="transactions-categories">
+      <p-card>
+        <div *ngFor="let category of categoryArray">
+          <div
+            *ngIf="category.value > 0"
+            (click)="handleCategorySelection(category.name)"
+            class="category-information"
+          >
+            <div class="category-label">
+              <div
+                [style.backgroundColor]="setCategoryColor(category)"
+                class="key-color"
+              ></div>
+              <div>
+                {{ category.name }}
+              </div>
+            </div>
             <div>
-              {{ category.name }}
+              {{ category.value | formatDollar }}
+              <span *ngIf="!isSpendView"
+                >/
+                <strong>{{
+                  category.budgetValue || 0 | formatDollar
+                }}</strong></span
+              >
             </div>
           </div>
-          <div>
-            {{ category.value | formatDollar }}
-            <span *ngIf="!isSpendView"
-              >/
-              <strong>{{
-                category.budgetValue || 0 | formatDollar
-              }}</strong></span
-            >
-          </div>
+          <app-transaction-item
+            *ngIf="filteredTransactions && selectedCategory === category.name"
+            [transactions]="filteredTransactions"
+            [showIcon]="false"
+          ></app-transaction-item>
+          <p-divider *ngIf="category.value > 0"></p-divider>
         </div>
-        <app-transaction-item
-          *ngIf="filteredTransactions && selectedCategory === category.name"
-          [transactions]="filteredTransactions"
-          [showIcon]="false"
-        ></app-transaction-item>
-        <p-divider *ngIf="category.value > 0"></p-divider>
-      </div>
-    </p-card>
+      </p-card>
+    </div>
   </div>
 </div>
-
 <div *ngIf="!dataLoaded" class="spinner-container">
   <p-progressSpinner ariaLabel="loading" />
+</div>
+<div
+  *ngIf="dataLoaded && transactionData && transactionData.length === 0"
+  class="spinner-container"
+>
+  No transactions found.
 </div>

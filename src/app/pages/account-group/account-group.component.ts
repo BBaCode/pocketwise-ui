@@ -37,8 +37,6 @@ export class AccountGroupComponent implements OnInit, OnDestroy {
         this.accountsLoaded = true;
       }
     });
-
-    console.log(this.accountType);
   }
   ngOnDestroy(): void {
     if (this.accounts$) {

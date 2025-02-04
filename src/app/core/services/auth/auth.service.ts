@@ -106,7 +106,6 @@ export class AuthService {
         this.broadcastData();
         return; // Exit if no user data
       }
-      console.log(userData);
       // Store additional user data in the backend
       await this.getUserFromDb(userData);
       // Update authStore with user info
@@ -181,7 +180,6 @@ export class AuthService {
   }
 
   private async getUserFromDb(user: User | null) {
-    console.log('user, ', user, user?.id);
     await fetch('http://localhost:80/login', {
       method: 'POST',
       headers: {
@@ -193,7 +191,6 @@ export class AuthService {
       }),
     })
       .then((response) => {
-        console.log('BDB Response:', response);
         if (!response.ok) {
           throw new Error('Failed to login');
         }
@@ -201,11 +198,9 @@ export class AuthService {
         return response.text(); // Use `text` instead of `json` temporarily
       })
       .then((text) => {
-        console.log('BDB Response Body:', text); // Log raw response body
         return JSON.parse(text); // Manually parse JSON to catch any errors
       })
       .then((data: any) => {
-        console.log(data);
         this.authStore = {
           user: {
             email: data.data.email,
