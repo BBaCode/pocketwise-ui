@@ -53,14 +53,10 @@ export class DataStoreService {
       this.store.accounts = MOCK_ACCOUNTS;
       this.updateConsumers();
     } else {
-      console.log('Fetching accounts from API');
-
       const token = await this.auth.getAuthToken();
       const headers = {
         Authorization: `Bearer ${token}`,
       };
-
-      console.log(headers);
       this.http.get(`${this.apiUrl}/accounts`, { headers: headers }).subscribe(
         (data: any) => {
           this.store.accounts = data;
@@ -119,7 +115,6 @@ export class DataStoreService {
         (data: any) => {
           this.store.transactions = data;
           this.updateConsumers();
-          console.log(data);
         },
         (error) => {
           console.error('Failed to load transactions', error);
@@ -273,6 +268,5 @@ export class DataStoreService {
   // when next is called, all subscribers get the new data
   private updateConsumers() {
     this.dataStore.next({ ...this.store });
-    console.log('updating consumers', this.dataStore);
   }
 }

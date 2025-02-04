@@ -52,3 +52,19 @@
   right: 1rem;
   z-index: 3;
 }
+
+@media screen and (width > 660px) {
+  .spending-container {
+    margin: 2rem;
+  }
+
+  .bottom-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .transactions-categories {
+    width: 50%;
+  }
+}

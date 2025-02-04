@@ -43,11 +43,15 @@ export class SpendingComponent implements OnInit {
   dataLoaded: boolean = false;
   chartData: any;
   options: any;
-  months: any;
+  dates: any;
   totals: any;
   incomeTotals: any;
-  currentMonth: string = '';
+  currentDate: string = '';
+  budgets: Budget[] | null = [];
+  // This is from the data store itself and is the current budget for the month
   currentBudget: Budget | null = null;
+  // This is the budget that is selected by the user in the spending component
+  selectedBudget: Budget | null = null;
 
   filteredTransactions: Transaction[] | undefined;
   selectedCategory: string = '';
@@ -83,26 +87,26 @@ export class SpendingComponent implements OnInit {
   constructor(
     private dataStore: DataStoreService,
     private cdr: ChangeDetectorRef
-  ) {
-    this.dataLoaded = false;
-  }
+  ) {}
 
-  async ngOnInit() {
+  ngOnInit() {
+    this.dataLoaded = false;
     // may not need because its called in the dashboard
     if (!this.dataStore.dataStore.value.transactions)
       this.dataStore.getAllTransactions();
     this.dataStore.getAllBudgets();
-    this.transactions$ = await this.dataStore.dataStore.subscribe(
+    this.transactions$ = this.dataStore.dataStore.subscribe(
       (data: DataStore) => {
         if (!this.transactionData) this.refresh();
         this.transactionData = data.transactions;
-        this.currentBudget = data.currentBudget;
-        if (this.transactionData) {
+        this.selectedBudget = data.currentBudget;
+        this.budgets = data.budgets;
+        if (this.transactionData && this.transactionData.length > 0) {
           this.nonCategorizedTransactions = this.transactionData?.filter(
             (txn) => txn.category === 'Unknown'
           );
           this.getMonthlySpend(this.transactionData);
-        }
+        } else this.dataLoaded = true;
       }
     );
   }
@@ -123,6 +127,10 @@ export class SpendingComponent implements OnInit {
   }
 
   getMonthlySpend(transactions: Transaction[]) {
+    if (!transactions) {
+      this.dataLoaded = true;
+      return;
+    }
     const monthlyTotals = new Map<string, number>();
     const incomeTotals = new Map<string, number>();
 
@@ -147,20 +155,28 @@ export class SpendingComponent implements OnInit {
       }
     }
 
-    this.months = Array.from(monthlyTotals.keys());
+    this.dates = Array.from(monthlyTotals.keys());
     this.totals = Array.from(monthlyTotals.values());
     this.incomeTotals = Array.from(incomeTotals.values());
-    this.currentMonth = this.months[this.months.length - 1];
+    this.currentDate = this.dates[this.dates.length - 1];
     this.categoryArray = this.separateCategories(this.transactionData);
-    this.onMonthSelected(this.currentMonth);
+    this.onDateSelected(this.currentDate);
     this.dataLoaded = true;
   }
 
-  onMonthSelected(month: string) {
-    this.currentMonth = month;
+  onDateSelected(month: string) {
+    this.currentDate = month;
+    this.selectedBudget =
+      month.charAt(0) === '0'
+        ? this.budgets?.find(
+            (budget) => '0' + budget.month + '/' + budget.year === month
+          ) ?? null
+        : this.budgets?.find(
+            (budget) => budget.month + '/' + budget.year === month
+          ) ?? null;
     if (this.transactionData) {
       const filteredTransactions = this.transactionData.filter((txn) => {
-        const txnMonth = format(new Date(txn.transacted_at * 1000), 'MMM');
+        const txnMonth = this.unixToDate(txn);
         return txnMonth === month;
       });
 
@@ -180,7 +196,7 @@ export class SpendingComponent implements OnInit {
     this.selectedCategory = this.selectedCategory === category ? '' : category;
     this.filteredTransactions = this.transactionData
       ?.filter((txn) => txn.category === category)
-      .filter((txn) => this.unixToDate(txn) === this.currentMonth)
+      .filter((txn) => this.unixToDate(txn) === this.currentDate)
       .sort((a, b) => {
         const dateA = new Date(a.transacted_at).getTime();
         const dateB = new Date(b.transacted_at).getTime();
@@ -255,7 +271,7 @@ export class SpendingComponent implements OnInit {
   }
 
   private unixToDate(txn: Transaction): string {
-    const monthCode = format(new Date(txn.transacted_at * 1000), 'MMM');
+    const monthCode = format(new Date(txn.transacted_at * 1000), 'MM/yyyy');
     return monthCode;
   }
 
@@ -265,42 +281,40 @@ export class SpendingComponent implements OnInit {
   // the category to the budgeted category name
 
   private matchBudgetToCategory() {
-    if (this.currentBudget && this.categoryArray) {
+    if (this.selectedBudget && this.categoryArray) {
       this.categoryArray.forEach((category) => {
         if (category.name === 'Food & Dining') {
-          category.budgetValue = this.currentBudget?.food;
+          category.budgetValue = this.selectedBudget?.food;
         } else if (category.name === 'Gifts & Donations') {
-          category.budgetValue = this.currentBudget?.gifts;
+          category.budgetValue = this.selectedBudget?.gifts;
         } else if (category.name === 'Health & Wellness') {
-          category.budgetValue = this.currentBudget?.health;
+          category.budgetValue = this.selectedBudget?.health;
         } else if (category.name === 'Personal Care') {
-          category.budgetValue = this.currentBudget?.personal_care;
+          category.budgetValue = this.selectedBudget?.personal_care;
         } else if (category.name === 'Entertainment') {
-          category.budgetValue = this.currentBudget?.entertainment;
+          category.budgetValue = this.selectedBudget?.entertainment;
         } else if (category.name === 'Education') {
-          category.budgetValue = this.currentBudget?.education;
+          category.budgetValue = this.selectedBudget?.education;
         } else if (category.name === 'Groceries') {
-          category.budgetValue = this.currentBudget?.groceries;
+          category.budgetValue = this.selectedBudget?.groceries;
         } else if (category.name === 'Insurance') {
-          category.budgetValue = this.currentBudget?.insurance;
+          category.budgetValue = this.selectedBudget?.insurance;
         } else if (category.name === 'Housing') {
-          category.budgetValue = this.currentBudget?.housing;
+          category.budgetValue = this.selectedBudget?.housing;
         } else if (category.name === 'Shopping') {
-          category.budgetValue = this.currentBudget?.shopping;
+          category.budgetValue = this.selectedBudget?.shopping;
         } else if (category.name === 'Subscriptions') {
-          category.budgetValue = this.currentBudget?.subscriptions;
+          category.budgetValue = this.selectedBudget?.subscriptions;
         } else if (category.name === 'Transportation') {
-          category.budgetValue = this.currentBudget?.transportation;
+          category.budgetValue = this.selectedBudget?.transportation;
         } else if (category.name === 'Travel') {
-          category.budgetValue = this.currentBudget?.travel;
+          category.budgetValue = this.selectedBudget?.travel;
         } else if (category.name === 'Utilities') {
-          category.budgetValue = this.currentBudget?.utilities;
+          category.budgetValue = this.selectedBudget?.utilities;
         } else if (category.name === 'Other') {
-          category.budgetValue = this.currentBudget?.other;
+          category.budgetValue = this.selectedBudget?.other;
         }
       });
     }
-
-    console.log(this.categoryArray);
   }
 }

@@ -38,21 +38,23 @@ export class BudgetWidgetComponent implements OnInit {
   budgets$: Subscription | null = null;
   currentBudgetTotal: number = 0;
 
-  difference: number = 0;
+  left: number = 0;
   percent: string = '';
-  pieDifferenceValue: number = 0;
 
   transactions: Transaction[] | null = null;
   months: any;
   totals: any;
   currentMonth: any;
   currentYear: any;
-  currentTotal: any;
+  spent: any;
 
   ngOnInit() {
     this.budgets$ = this.ds.dataStore.subscribe((store: DataStore) => {
-      console.log('hit subscribe, txns:', this.transactions);
       this.budgets = store.budgets;
+      if (!store.currentBudget) {
+        this.currentBudgetTotal = 0;
+        return;
+      }
       this.currentBudgetTotal = store.currentBudget?.total || 0;
       this.currentMonth = store.currentBudget?.month;
       this.currentYear = store.currentBudget?.year;
@@ -95,21 +97,22 @@ export class BudgetWidgetComponent implements OnInit {
 
     this.months = Array.from(monthlyTotals.keys());
     this.totals = Array.from(monthlyTotals.values());
-    this.currentTotal = this.totals[this.totals.length - 1];
-    this.difference = this.currentBudgetTotal - this.currentTotal;
-    this.pieDifferenceValue = this.difference > 0 ? this.difference : 0;
+    this.spent = this.months.includes(
+      this.currentMonth + '/' + this.currentYear
+    )
+      ? this.totals[this.totals.length - 1]
+      : 0;
+    this.left = this.currentBudgetTotal - this.spent;
     this.calcAndFormatPercent();
   }
 
   private unixToDate(txn: Transaction): string {
-    const monthCode = format(new Date(txn.transacted_at * 1000), 'MMM');
+    const monthCode = format(new Date(txn.transacted_at * 1000), 'MM/yyyy');
     return monthCode;
   }
 
   private calcAndFormatPercent() {
-    const float = Math.round(
-      (this.currentTotal / this.currentBudgetTotal) * 100
-    );
+    const float = Math.round((this.spent / this.currentBudgetTotal) * 100);
     this.percent = float.toString() + '%';
   }
 
@@ -117,13 +120,13 @@ export class BudgetWidgetComponent implements OnInit {
     const documentStyle = getComputedStyle(document.documentElement);
     const blue = documentStyle.getPropertyValue('--blue-500');
     const red = documentStyle.getPropertyValue('--red-500');
-    const barColor = this.difference > 0 ? blue : red;
+    const barColor = this.left > 0 ? blue : red;
 
     this.data = {
       labels: ['Spent', 'Left'],
       datasets: [
         {
-          data: [this.currentBudgetTotal, this.pieDifferenceValue],
+          data: [this.left, this.spent],
           backgroundColor: [barColor, 'black'],
           hoverBackgroundColor: [
             documentStyle.getPropertyValue('--blue-400'),
