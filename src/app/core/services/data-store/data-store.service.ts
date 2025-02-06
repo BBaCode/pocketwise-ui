@@ -20,7 +20,7 @@ export class DataStoreService {
   dataStore: BehaviorSubject<DataStore>;
 
   private useMockData = false; // Toggle this to use mock data
-  private apiUrl = `http://pocketwise-server-production.up.railway.app:8080`; // prod
+  private apiUrl = `http://pocketwise-server-production.up.railway.app:80`; // prod
   // private apiUrl = 'http://localhost:8080'; // local
   private store: {
     accounts: Array<Account> | null;
