@@ -10,6 +10,8 @@ import { getSupabaseClient } from './supabase-client';
 export class AuthService {
   private supabase: SupabaseClient;
   private readonly ngZone = inject(NgZone);
+  private apiUrl = `http://pocketwise-server-production.up.railway.app:80`; // prod
+  // private apiUrl = 'http://localhost:8080'; // local
 
   userAuth: BehaviorSubject<UserStoreData>;
 
@@ -160,7 +162,7 @@ export class AuthService {
     firstName: string,
     lastName: string
   ) {
-    const response = await fetch('http://localhost:80/signup', {
+    const response = await fetch(`${this.apiUrl}/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -180,7 +182,7 @@ export class AuthService {
   }
 
   private async getUserFromDb(user: User | null) {
-    await fetch('http://localhost:80/login', {
+    await fetch(`${this.apiUrl}/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
