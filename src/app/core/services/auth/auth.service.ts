@@ -10,7 +10,7 @@ import { getSupabaseClient } from './supabase-client';
 export class AuthService {
   private supabase: SupabaseClient;
   private readonly ngZone = inject(NgZone);
-  private apiUrl = `http://pocketwise-server-production.up.railway.app:80`; // prod
+  private apiUrl = `https://pocketwise-server-staging.up.railway.app:80`; // staging
   // private apiUrl = 'http://localhost:8080'; // local
 
   userAuth: BehaviorSubject<UserStoreData>;
